@@ -22,10 +22,10 @@ openssl=3.5.0=h7b32b05_1 @ linux-64
 pip=25.1.1=pyh8b19718_0 @ noarch
 python=3.11.12=h9e4cc4f_0_cpython @ linux-64
 readline=8.2=h8c095d6_2 @ linux-64
-setuptools=70.0.0=pyhd8ed1ab_0 @ noarch
+setuptools=80.1.0=pyhff2d567_0 @ noarch
 tk=8.6.13=noxft_h4845f30_101 @ linux-64
 tzdata=2025b=h78e105d_0 @ noarch
 wheel=0.45.1=pyhd8ed1ab_1 @ noarch
 
 [Conda lock version]
-v2 - a16d275f85fbcb705c451305b46a57468031630ce2561e34f861ad6302e07e7f
+v2 - 9d603c4b45fc6b1f586dc510f278e58bf47aa9b04a4001780565ee780b7de2db

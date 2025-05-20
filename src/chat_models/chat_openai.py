@@ -3,6 +3,7 @@ from langchain_core.callbacks.manager import CallbackManagerForLLMRun
 from langchain_core.language_models.chat_models import BaseChatModel
 from langchain_core.outputs import GenerationChunk
 from palantir_models.transforms import OpenAiGptChatLanguageModelInput
+from langchain_core.messages import AIMessage, BaseMessage, HumanMessage, SystemMessage
 from palantir_models.models import OpenAiGptChatLanguageModel
 from language_model_service_api.languagemodelservice_api_completion_v3 import (
     GptChatCompletionRequest,
@@ -32,11 +33,13 @@ class ChatOpenAI(BaseChatModel):
     """
 
     model: OpenAiGptChatLanguageModel
-    def __init__(self, model: str):
 
-    def _call(
+    def __init__(self, model: str):
+        self.model = OpenAiGptChatLanguageModel.get(model)
+
+    def _generate(
         self,
-        prompt: str,
+        messages: List[BaseMessage],
         stop: Optional[List[str]] = None,
         run_manager: Optional[CallbackManagerForLLMRun] = None,
         **kwargs: Any,
@@ -57,19 +60,23 @@ class ChatOpenAI(BaseChatModel):
         Returns:
             The model output as a string. Actual completions SHOULD NOT include the prompt.
         """
-        system_prompt = "Answer the following question"
-        request = GptChatCompletionRequest(
-            [
-                ChatMessage(ChatMessageRole.SYSTEM, system_prompt),
-                ChatMessage(ChatMessageRole.USER, prompt),
-            ]
-        )
+        request = GptChatCompletionRequest(list(map(self._translate_message, messages)))
         try:
             resp = self.model.create_chat_completion(request)
             return resp.choices[0].message.content
         except Exception as e:
             print("Error during API call: %s", e)
             return "Error generating response"
+
+    def _translate_message(self, message: BaseMessage) -> ChatMessage:
+        if message.type == "human":
+            return ChatMessage(ChatMessageRole.USER, message.content)
+        elif message.type == "ai":
+            return ChatMessage(ChatMessageRole.ASSISTANT, message.content)
+        elif message.type == "system":
+            return ChatMessage(ChatMessageRole.SYSTEM, message.content)
+        else:
+            raise ValueError(f"Unknown message type: {message.type}")
 
     def _stream(
         self,
@@ -112,7 +119,7 @@ class ChatOpenAI(BaseChatModel):
             # rules in LLM monitoring applications (e.g., in LangSmith users
             # can provide per token pricing for their model and monitor
             # costs for the given LLM.)
-            "model_name": "CustomChatModel",
+            "model_name": "CustomOpenAI",
         }
 
     @property

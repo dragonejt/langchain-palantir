@@ -1,12 +1,18 @@
 from typing import Any, Dict, Iterator, List, Mapping, Optional
 from langchain_core.callbacks.manager import CallbackManagerForLLMRun
 from langchain_core.language_models.chat_models import BaseChatModel
-from langchain_core.outputs import GenerationChunk
+from langchain_core.outputs import (
+    ChatGeneration,
+    ChatGenerationChunk,
+    ChatResult,
+    GenerationChunk,
+)
 from palantir_models.transforms import OpenAiGptChatLanguageModelInput
 from langchain_core.messages import AIMessage, BaseMessage, HumanMessage, SystemMessage
 from palantir_models.models import OpenAiGptChatLanguageModel
 from language_model_service_api.languagemodelservice_api_completion_v3 import (
     GptChatCompletionRequest,
+    GptChatCompletionResponse,
 )
 from language_model_service_api.languagemodelservice_api import (
     ChatMessage,
@@ -33,9 +39,7 @@ class ChatOpenAI(BaseChatModel):
     """
 
     model: OpenAiGptChatLanguageModel
-
-    def __init__(self, model: str):
-        self.model = OpenAiGptChatLanguageModel.get(model)
+    temperature: float = 0
 
     def _generate(
         self,
@@ -43,7 +47,7 @@ class ChatOpenAI(BaseChatModel):
         stop: Optional[List[str]] = None,
         run_manager: Optional[CallbackManagerForLLMRun] = None,
         **kwargs: Any,
-    ) -> str:
+    ) -> ChatResult:
         """Run the LLM on the given input.
 
         Override this method to implement the LLM logic.
@@ -60,13 +64,13 @@ class ChatOpenAI(BaseChatModel):
         Returns:
             The model output as a string. Actual completions SHOULD NOT include the prompt.
         """
-        request = GptChatCompletionRequest(list(map(self._translate_message, messages)))
-        try:
-            resp = self.model.create_chat_completion(request)
-            return resp.choices[0].message.content
-        except Exception as e:
-            print("Error during API call: %s", e)
-            return "Error generating response"
+        request = GptChatCompletionRequest(
+            messages=list(map(self._translate_message, messages)),
+            temperature=self.temperature,
+            stop=stop,
+        )
+        response = self.model.create_chat_completion(request)
+        return ChatResult(generations=[self._translate_response(response)])
 
     def _translate_message(self, message: BaseMessage) -> ChatMessage:
         if message.type == "human":
@@ -78,13 +82,27 @@ class ChatOpenAI(BaseChatModel):
         else:
             raise ValueError(f"Unknown message type: {message.type}")
 
+    def _translate_response(
+        self, response: GptChatCompletionResponse
+    ) -> ChatGeneration:
+        message = AIMessage(
+            content=response.choices[0].message.content,
+            usage_metadata={
+                "input_tokens": 0,
+                "output_tokens": 0,
+                "total_tokens": 0,
+            },
+        )
+
+        return ChatGeneration(message=message)
+
     def _stream(
         self,
         prompt: str,
         stop: Optional[List[str]] = None,
         run_manager: Optional[CallbackManagerForLLMRun] = None,
         **kwargs: Any,
-    ) -> Iterator[GenerationChunk]:
+    ) -> Iterator[ChatGenerationChunk]:
         """Stream the LLM on the given prompt.
 
         This method should be overridden by subclasses that support streaming.
@@ -105,7 +123,7 @@ class ChatOpenAI(BaseChatModel):
             An iterator of GenerationChunks.
         """
         for char in prompt[: self.n]:
-            chunk = GenerationChunk(text=char)
+            chunk = ChatGenerationChunk(text=char)
             if run_manager:
                 run_manager.on_llm_new_token(chunk.text, chunk=chunk)
 
@@ -119,7 +137,7 @@ class ChatOpenAI(BaseChatModel):
             # rules in LLM monitoring applications (e.g., in LangSmith users
             # can provide per token pricing for their model and monitor
             # costs for the given LLM.)
-            "model_name": "CustomOpenAI",
+            "model_name": "ChatPalantirOpenAI",
         }
 
     @property

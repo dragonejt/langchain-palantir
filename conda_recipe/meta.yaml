@@ -1,6 +1,6 @@
 package:
-  name: '{{ PACKAGE_NAME }}'
-  version: '{{ PACKAGE_VERSION }}'
+  name: 'langchain-palantir'
+  version: '0.0.2'
 source:
   path: ../src
 requirements:

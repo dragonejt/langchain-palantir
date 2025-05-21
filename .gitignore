@@ -144,3 +144,8 @@ ENV/
 .mypy_cache/
 
 _version.py
+
+# Palantir Functions
+.maestro/
+.patches/
+gradle/

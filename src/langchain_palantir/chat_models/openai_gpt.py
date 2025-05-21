@@ -20,7 +20,7 @@ from language_model_service_api.languagemodelservice_api import (
 )
 
 
-class ChatOpenAI(BaseChatModel):
+class PalantirChatOpenAI(BaseChatModel):
     """A custom chat model that echoes the first `n` characters of the input.
 
     When contributing an implementation to LangChain, carefully document
@@ -84,7 +84,7 @@ class ChatOpenAI(BaseChatModel):
 
     def _translate_response(
         self, response: GptChatCompletionResponse
-    ) -> ChatGeneration:
+    ) -> list[ChatGeneration]:
         message = AIMessage(
             content=response.choices[0].message.content,
             usage_metadata={
@@ -137,7 +137,7 @@ class ChatOpenAI(BaseChatModel):
             # rules in LLM monitoring applications (e.g., in LangSmith users
             # can provide per token pricing for their model and monitor
             # costs for the given LLM.)
-            "model_name": "ChatPalantirOpenAI",
+            "model_name": "PalantirChatOpenAI",
         }
 
     @property

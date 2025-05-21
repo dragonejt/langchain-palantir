@@ -1,7 +1,7 @@
 from unittest import TestCase
 from palantir_models.models import OpenAiGptChatLanguageModel
 
-from chat_models.chat_openai import ChatOpenAI
+from langchain_palantir.chat_models.openai_gpt import ChatOpenA
 
 
 def test_response() -> None:

@@ -23,9 +23,9 @@ apply plugin: 'com.palantir.transforms.lang.python-library-defaults'
 apply plugin: 'com.palantir.transforms.lang.pytest-defaults'
 
 // Apply the formatting plugins
-apply plugin: 'com.palantir.transforms.lang.format-code-black'
+// apply plugin: 'com.palantir.transforms.lang.format-code-black'
 apply plugin: 'com.palantir.transforms.lang.format-code-ruff'
 
 // Apply the linting plugins
-apply plugin: 'com.palantir.conda.pep8'
+// apply plugin: 'com.palantir.conda.pep8'
 apply plugin: 'com.palantir.conda.pylint'

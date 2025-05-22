@@ -70,7 +70,7 @@ class PalantirChatOpenAI(BaseChatModel):
             stop=stop,
         )
         response = self.model.create_chat_completion(request)
-        return ChatResult(generations=[self._translate_response(response)])
+        return ChatResult(generations=self._translate_response(response))
 
     def _translate_message(self, message: BaseMessage) -> ChatMessage:
         if message.type == "human":
@@ -85,16 +85,44 @@ class PalantirChatOpenAI(BaseChatModel):
     def _translate_response(
         self, response: GptChatCompletionResponse
     ) -> list[ChatGeneration]:
-        message = AIMessage(
-            content=response.choices[0].message.content,
-            usage_metadata={
-                "input_tokens": 0,
-                "output_tokens": 0,
-                "total_tokens": 0,
-            },
-        )
+        usage_metadata = {
+            "input_tokens": response.usage.prompt_tokens,
+            "output_tokens": response.usage.completion_tokens,
+            "total_tokens": response.usage.total_tokens,
+        }
+        generations = []
+        for choice in response.choices:
+            if choice.message.role == ChatMessageRole.USER:
+                generations.append(
+                    ChatGeneration(
+                        message=HumanMessage(
+                            content=choice.message.content,
+                            usage_metadata=usage_metadata,
+                        )
+                    )
+                )
+            elif choice.message.role == ChatMessageRole.ASSISTANT:
+                generations.append(
+                    ChatGeneration(
+                        message=AIMessage(
+                            content=choice.message.content,
+                            usage_metadata=usage_metadata,
+                        )
+                    )
+                )
+            elif choice.message.role == ChatMessageRole.SYSTEM:
+                generations.append(
+                    ChatGeneration(
+                        message=SystemMessage(
+                            content=choice.message.content,
+                            usage_metadata=usage_metadata,
+                        )
+                    )
+                )
+            else:
+                raise ValueError(f"Unknown message role: {choice.message.role}")
 
-        return ChatGeneration(message=message)
+        return generations
 
     def _stream(
         self,

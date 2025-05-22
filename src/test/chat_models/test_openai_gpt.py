@@ -40,7 +40,7 @@ class TestOpenAiGpt:
                 usage=GptChatUsage(10, 15, 25),
             )
 
-            mock_model = MagicMock()
+            mock_model = MagicMock(spec=OpenAiGptChatLanguageModel)
             mock_model.create_chat_completion.return_value = mock_response
 
             cls.model = mock_model

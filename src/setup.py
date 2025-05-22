@@ -7,7 +7,7 @@ from setuptools import find_packages, setup
 setup(
     name=os.environ["PKG_NAME"],
     version=os.environ["PKG_VERSION"],
-    description="LangChain using Palantir LLMs",
+    description="LangChain on Palantir",
     author="dragonejt",
     packages=find_packages(exclude=["contrib", "docs", "test"]),
     # Please specify your dependencies in conda_recipe/meta.yaml instead.

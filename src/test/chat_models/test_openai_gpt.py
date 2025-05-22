@@ -9,7 +9,7 @@ from language_model_service_api.languagemodelservice_api_completion_v3 import (
     GptChatUsage,
 )
 
-from langchain_palantir.chat_models.openai_gpt import PalantirChatOpenAI
+from langchain_palantir import PalantirChatOpenAI
 
 
 class TestOpenAiGpt:
@@ -45,7 +45,7 @@ class TestOpenAiGpt:
 
             cls.model = mock_model
 
-    def test_response(self) -> None:
+    def test_palantir_chat_openai(self) -> None:
         question = "Why is the sky blue?"
         wrapped_llm = PalantirChatOpenAI(model=self.model)
         answer = wrapped_llm.invoke(question)

@@ -1,6 +1,6 @@
 package:
-  name: 'langchain-palantir'
-  version: '0.0.2'
+  name: langchain-palantir
+  version: 0.0.4
 source:
   path: ../src
 requirements:

@@ -145,7 +145,6 @@ ENV/
 
 _version.py
 
-# Palantir Hawk
-.maestro/
+# Palantir
 .patches/
 share/

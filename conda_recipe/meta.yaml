@@ -5,13 +5,13 @@ source:
   path: ../src
 requirements:
   build:
-  - python
+  - python >=3.12
   - setuptools
   run:
-  - python
   - palantir_models
   - langchain
   - langchain-core
+  - python >=3.12
 test:
   requires:
   - pytest

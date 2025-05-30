@@ -10,8 +10,8 @@ requirements:
   run:
   - palantir_models
   - langchain
-  - langchain-core
   - python
+  - langchain-core
 test:
   requires:
   - pytest

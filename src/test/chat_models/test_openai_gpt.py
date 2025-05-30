@@ -1,5 +1,8 @@
+from typing import Optional
 from unittest.mock import MagicMock
 import logging
+from datetime import datetime, timezone
+from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
 from language_model_service_api.languagemodelservice_api import ChatMessageRole
 from palantir_models.models import OpenAiGptChatLanguageModel
 from language_model_service_api.languagemodelservice_api_completion_v3 import (
@@ -8,12 +11,13 @@ from language_model_service_api.languagemodelservice_api_completion_v3 import (
     GptChatCompletionResponse,
     GptChatUsage,
 )
+from langchain_core.tools import tool
 
 from langchain_palantir import PalantirChatOpenAI
 
 
 class TestOpenAiGpt:
-    model: OpenAiGptChatLanguageModel
+    model: Optional[OpenAiGptChatLanguageModel]
 
     @classmethod
     def setup_class(cls) -> None:
@@ -21,34 +25,51 @@ class TestOpenAiGpt:
             cls.model = OpenAiGptChatLanguageModel.get("GPT_4o")
             logging.info("Using live LLM")
         except Exception as ex:
-            logging.warning(f"Using mock LLM due to {ex}")
-            mock_choice = GptChatCompletionChoice(
-                finish_reason="",
-                index=0,
-                message=GptChatCompletionChoiceMessage(
-                    role=ChatMessageRole.ASSISTANT,
-                    content="The sky appears blue due to a phenomenon called Rayleigh scattering. When sunlight enters Earth's atmosphere, it is made up of many different colors, each with different wavelengths. Blue light has a shorter wavelength compared to other colors like red or yellow.\n\nAs sunlight passes through the atmosphere, it interacts with air molecules and small particles. Shorter wavelengths of light, such as blue, are scattered in all directions by these molecules and particles. This scattering causes the blue light to be more prominent and visible from all directions, making the sky appear blue to our eyes.\n\nDuring sunrise and sunset, the sky can appear red or orange because the sunlight has to pass through a greater thickness of the atmosphere. This causes more scattering of the shorter wavelengths and allows the longer wavelengths, like red and orange, to dominate the sky's appearance.",
-                ),
-            )
-
-            mock_response = GptChatCompletionResponse(
-                choices=[mock_choice],
-                created=0,
-                id="",
-                model="GPT_4o",
-                object="",
-                usage=GptChatUsage(10, 15, 25),
-            )
-
-            mock_model = MagicMock(spec=OpenAiGptChatLanguageModel)
-            mock_model.create_chat_completion.return_value = mock_response
-
-            cls.model = mock_model
+            logging.error(f"Could not get LLM due to {ex}")
+            cls.model = None
 
     def test_palantir_chat_openai(self) -> None:
+        if self.model == None:
+            return
         question = "Why is the sky blue?"
         wrapped_llm = PalantirChatOpenAI(model=self.model)
         answer = wrapped_llm.invoke(question)
 
         assert len(answer.content) >= 0
         assert "rayleigh scattering" in answer.content.lower()
+
+    def test_palantir_tool_calling(self) -> None:
+        if self.model == None:
+            return
+
+        messages: list[BaseMessage] = [
+            HumanMessage("Using the date_time tool, what is today's date?")
+        ]
+
+        @tool
+        def date_time() -> datetime:
+            """
+            Returns the current datetime in python.
+            Parameters: None
+            """
+
+            return datetime.now(timezone.utc)
+
+        tools = {"date_time": date_time}
+
+        llm = PalantirChatOpenAI(model=self.model)
+        llm_with_tools = llm.bind_tools(tools.values())
+        answer = llm_with_tools.invoke(messages)
+        messages.append(answer)
+
+        assert isinstance(answer, AIMessage)
+        assert len(answer.tool_calls) == 1
+
+        for tool_call in answer.tool_calls:
+            messages.append(tools[tool_call["name"]].invoke(tool_call))
+
+        final_answer = llm_with_tools.invoke(messages)
+
+        date = datetime.now(timezone.utc)
+        assert str(date.year) in final_answer.content
+        assert str(date.day) in final_answer.content

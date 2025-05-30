@@ -10,12 +10,14 @@ requirements:
   run:
   - palantir_models
   - langchain
-  - python
   - langchain-core
+  - pytest
+  - python
 test:
   requires:
   - pytest
   - pytest-transforms
+  - pytest-randomly
 build:
   script: python setup.py install --single-version-externally-managed --record=record.txt
   noarch: python

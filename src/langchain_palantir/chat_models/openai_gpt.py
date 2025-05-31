@@ -14,7 +14,8 @@ from typing_extensions import override
 from json import loads, dumps
 from langchain_core.callbacks.manager import CallbackManagerForLLMRun
 from langchain_core.language_models import LanguageModelInput
-from langchain_core.language_models.chat_models import BaseChatModel
+from langchain_openai import BaseChatOpenAI
+
 from langchain_core.outputs import (
     ChatGeneration,
     ChatGenerationChunk,
@@ -61,7 +62,7 @@ from language_model_service_api.languagemodelservice_api import (
 )
 
 
-class PalantirChatOpenAI(BaseChatModel):
+class PalantirChatOpenAI(BaseChatOpenAI):
     model: OpenAiGptChatLanguageModel
     temperature: float = 0
 

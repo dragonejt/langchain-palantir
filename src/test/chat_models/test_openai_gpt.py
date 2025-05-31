@@ -22,10 +22,10 @@ class TestOpenAiGpt:
     @classmethod
     def setup_class(cls) -> None:
         try:
-            cls.model = OpenAiGptChatLanguageModel.get("GPT_4o")
+            cls.model = OpenAiGptChatLanguageModel.get("GPT_4_1")
             logging.info("Using live LLM")
         except Exception as ex:
-            logging.error(f"Could not get LLM due to {ex}")
+            logging.exception("Could not get LLM due to %s", ex)
             cls.model = None
 
     def test_palantir_chat_openai(self) -> None:

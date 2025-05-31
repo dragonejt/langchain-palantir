@@ -50,7 +50,7 @@ flask=3.1.1=pyhd8ed1ab_0 @ 931c1ab2
 foundry-logging-lib-python=0.146.0=py_0 @ aeac16fb
 foundry-ml-api=3.892.0=py_0 @ aeac16fb
 foundry-ml-live-internal-api=1.1033.0=py_0 @ aeac16fb
-foundry-telemetry-service-api=0.1175.0=py_0 @ aeac16fb
+foundry-telemetry-service-api=0.1176.0=py_0 @ aeac16fb
 foundry_ml_live_inference=1.1033.0=py_0 @ aeac16fb
 frozenlist=1.6.0=py312hb9e946c_0 @ 426e1572
 future=1.0.0=pyhd8ed1ab_2 @ 2cda1526
@@ -75,7 +75,7 @@ jsonpointer=3.0.0=py312h7900ff3_1 @ ad241afe
 keyutils=1.6.1=h166bdaf_0 @ 6c0115f0
 krb5=1.21.3=h659f571_0 @ 426e1572
 langchain=0.3.25=pymin312_hff2d567_0 @ 931c1ab2
-langchain-core=0.3.62=pyhd8ed1ab_0 @ 931c1ab2
+langchain-core=0.3.63=pyhd8ed1ab_0 @ 931c1ab2
 langchain-text-splitters=0.3.8=pyhd8ed1ab_0 @ 931c1ab2
 langsmith=0.3.42=pyhd8ed1ab_0 @ 931c1ab2
 language-model-service-api=0.2368.0=py_0 @ aeac16fb
@@ -114,7 +114,7 @@ libopenblas=0.3.29=pthreads_h94d23a6_0 @ 426e1572
 libparquet=18.1.0=h6bd9018_1_cpu @ 426e1572
 libprotobuf=5.28.2=h5b01275_0 @ 426e1572
 libre2-11=2024.07.02=hbbce691_2 @ 426e1572
-libsqlite=3.49.2=hee588c1_0 @ 426e1572
+libsqlite=3.50.0=hee588c1_0 @ ad241afe
 libssh2=1.11.1=hcf80075_0 @ 426e1572
 libstdcxx=15.1.0=h8f9b012_2 @ 426e1572
 libstdcxx-ng=15.1.0=h4852527_2 @ 426e1572
@@ -138,7 +138,7 @@ orjson=3.10.18=py312h680f630_1 @ ad241afe
 packaging=24.2=pyhd8ed1ab_2 @ 2cda1526
 palantir-layer-pack=0.28.0=py312 @ c37a1747
 palantir-spark-time=3.24.0=py_0 @ 586315a4
-palantir_models=0.1739.0=py_0 @ aeac16fb
+palantir_models=0.1740.0=py_0 @ aeac16fb
 pandas=2.2.3=py312hf9745cd_3 @ 426e1572
 pcre2=10.45=hc749103_0 @ ad241afe
 pip=25.1.1=pyh8b19718_0 @ 2cda1526
@@ -156,6 +156,8 @@ pysocks=1.7.1=pyha55dd90_7 @ 2cda1526
 pyspark=3.5.1.47=py_0 @ 586315a4
 pyspark-src=3.5.1.47=py_0 @ 586315a4
 pytest=8.3.5=pyhd8ed1ab_0 @ 931c1ab2
+pytest-randomly=3.15.0=pyhd8ed1ab_0 @ 931c1ab2
+pytest-transforms=2.345.0=py_0 @ 586315a4
 python=3.12.10=h9e4cc4f_0_cpython @ 426e1572
 python-dateutil=2.9.0.post0=pyhff2d567_1 @ 2cda1526
 python-decouple=3.8=pyhff2d567_1 @ 931c1ab2
@@ -192,7 +194,7 @@ werkzeug=3.1.3=pyhd8ed1ab_1 @ 931c1ab2
 wheel=0.45.1=pyhd8ed1ab_1 @ 2cda1526
 yaml=0.2.5=h7f98852_2 @ 6c0115f0
 yarl=1.20.0=py312h178313f_0 @ 426e1572
-zipp=3.22.0=pyhd8ed1ab_0 @ 931c1ab2
+zipp=3.22.0=pyhd8ed1ab_0 @ 2cda1526
 zstandard=0.23.0=py312h66e93f0_2 @ 426e1572
 zstd=1.5.7=hb8e6e7a_2 @ 426e1572
 
@@ -215,4 +217,4 @@ ri.stemma.main.repository.a9550cf0-488f-419f-b935-9004e067b93f
 ri.stemma.main.repository.a9550cf0-488f-419f-b935-9004e067b93f
 
 [conda lock version]
-v3 - d074c9d185508f3bea984630f6989111d116e5b00d58181333b771960f6dbe2a
+v3 - bde814aa41bc0c865e7a1afc85cf835bd116e5b00d58181333b771960f6dbe2a

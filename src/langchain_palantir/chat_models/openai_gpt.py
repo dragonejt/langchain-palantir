@@ -12,8 +12,7 @@ from pydantic import Field
 from typing_extensions import override
 from json import loads, dumps
 from langchain_core.callbacks.manager import CallbackManagerForLLMRun
-from langchain_core.language_models import LanguageModelInput
-from langchain_openai import BaseChatOpenAI
+from langchain_core.language_models import LanguageModelInput, BaseChatModel
 
 from langchain_core.outputs import (
     ChatGeneration,
@@ -55,7 +54,7 @@ from language_model_service_api.languagemodelservice_api import (
 )
 
 
-class PalantirChatOpenAI(BaseChatOpenAI):
+class PalantirChatOpenAI(BaseChatModel):
     model: OpenAiGptChatLanguageModel
     """OpenAiGptChatLanguageModel from palantir_models to use."""
     temperature: Optional[float] = None

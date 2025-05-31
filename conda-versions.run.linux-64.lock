@@ -66,7 +66,6 @@ hyperframe=6.1.0=pyhd8ed1ab_0 @ noarch
 icu=75.1=he02047a_0 @ linux-64
 idna=3.10=pyhd8ed1ab_1 @ noarch
 importlib-metadata=8.7.0=pyhe01879c_1 @ noarch
-iniconfig=2.0.0=pyhd8ed1ab_1 @ noarch
 itsdangerous=2.2.0=pyhd8ed1ab_1 @ noarch
 jansson=2.14.1=hb9d3cd8_0 @ linux-64
 jinja2=3.1.6=pyhd8ed1ab_0 @ noarch
@@ -145,7 +144,6 @@ palantir_models=0.1742.0=py_0 @ noarch
 pandas=2.2.3=py312hf9745cd_3 @ linux-64
 pcre2=10.45=hc749103_0 @ linux-64
 pip=25.1.1=pyh8b19718_0 @ noarch
-pluggy=1.6.0=pyhd8ed1ab_0 @ noarch
 propcache=0.3.1=py312h178313f_0 @ linux-64
 psutil=7.0.0=py312h66e93f0_0 @ linux-64
 py-rattler=0.14.0=py39h260a9e5_0 @ linux-64
@@ -158,7 +156,6 @@ pydantic=2.11.4=pyh3cfb1c2_0 @ noarch
 pysocks=1.7.1=pyha55dd90_7 @ noarch
 pyspark-src=3.5.5.16=py_0 @ noarch
 pyspark=3.5.5.16=py_0 @ noarch
-pytest=8.3.5=pyhd8ed1ab_0 @ noarch
 python-dateutil=2.9.0.post0=pyhff2d567_1 @ noarch
 python-decouple=3.8=pyhff2d567_1 @ noarch
 python-gil=3.12.10=hd8ed1ab_0 @ noarch
@@ -182,7 +179,6 @@ sqlalchemy=2.0.41=py312h66e93f0_0 @ linux-64
 tenacity=9.1.2=pyhd8ed1ab_0 @ noarch
 tiktoken=0.9.0=py312h14ff09d_0 @ linux-64
 tk=8.6.13=noxft_hd72426e_102 @ linux-64
-tomli=2.2.1=pyhd8ed1ab_1 @ noarch
 tqdm=4.67.1=pyhd8ed1ab_1 @ noarch
 transforms-preview=0.822.0=py_0 @ noarch
 transforms=3.9.0=py_0 @ noarch
@@ -202,4 +198,4 @@ zstandard=0.23.0=py312h66e93f0_2 @ linux-64
 zstd=1.5.7=hb8e6e7a_2 @ linux-64
 
 [Conda lock version]
-v2 - 61181de9e64cc6465fd1f5616c2a0c29f1091bb5a67f1d67a021a0295da245f5
+v2 - c78d8b2f8c48c52d30ff7ccbc3172f82e96e1e08d70a1f179922bb5b2012c6ee

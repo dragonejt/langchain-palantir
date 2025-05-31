@@ -1,61 +1,37 @@
-# Publishing Conda libraries
+# LangChain on Palantir AIP
 
-This repository template is set up to publish a Conda library into Foundry. The ``build.gradle`` file configures the publish task to only run when the repository is tagged. You can create a new tag from the "Branches" tab.
+langchain-palantir is a library that allows users to call Palantir-provided LLMs in the LangChain framework. It provides LangChain wrappers around Palantir-provided LLMs, and can be used anywhere Palantir-provided LLMs can be used.
 
-By default, the repository's name at creation time is used as the name for the Conda package. It is possible to change the name of the package by updating the ``condaPackageName`` variable in the ``gradle.properties`` file. Note that since this is a hidden file, you will need to enable "Show hidden files and folders".
+## Installation
+Install langchain-palantir like any other Palantir conda package, with the Libraries left sidebar in a Code Repository or Code Workspace. langchain-palantir currently requires Python version 3.12.10 or later.
 
-*Important:* underscores in the repository name are rewritten to dash. For example, if your repository is named `my_library`, then the library will be published as `my-library`.
+## Usage
+langchain-palantir can be used like any other LangChain extension.
+### Basic Tool Calling Workflow
+```python
+model = OpenAiGptChatLanguageModel.get("GPT_4_1")
+messages = [
+  HumanMessage("Using the date_time tool, what is today's date?")
+]
 
-## Consuming Conda Libraries
+@tool
+def date_time() -> datetime:
+  """
+  Returns the current datetime in python.
+  Parameters: None
+  """
 
-Consumers will require read access on this repository to be able to consume the libraries it publishes. They can search for them in the *Libraries* section on the left-hand side in the consuming code repository. This will automatically add the dependency to ``meta.yaml`` and configure the appropriate Artifacts backing repositories.
+  return datetime.now(timezone.utc)
 
-Adding a library to your project will install packages from the source directory. The source directory defaults to ``src/`` and we recommend not changing this. You still need to import packages before you can use them in your module. Be aware that you have to import package name and not library name (in this template, the package name is ``myproject``).
+tools = {"date_time": date_time}
 
-### Example
+llm = PalantirChatOpenAI(model=model)
+llm_with_tools = llm.bind_tools(tools.values())
+answer = llm_with_tools.invoke(messages)
+messages.append(answer)
 
-Let's say your library structure is:
+for tool_call in answer.tool_calls:
+  messages.append(tools[tool_call["name"]].invoke(tool_call))
 
+final_answer = llm_with_tools.invoke(messages)
 ```
-conda_recipe/
-src/
-  examplepkg/
-    __init__.py
-    mymodule.py
-  otherpkg/
-    __init__.py
-    utils.py
-  setup.cfg
-  setup.py
-```
-
-And in ``gradle.properties``, the value of ``condaPackageName`` is ``mylibrary``.
-
-When consuming this library, the consuming repository's ``conda_recipe/meta.yaml`` file will contain:
-
-```
-requirements:
-  run:
-    - mylibrary
-```
-
-Then the packages, which in this example are ``examplepkg`` and ``otherpkg``, can be imported as follows:
-
-```
-import examplepkg as E
-from examplepkg import mymodule
-from otherpkg.utils import some_function_in_utils
-```
-
-Note that the import will fail if the package does not include a file named ``__init__.py``
-
-## Testing
-
-Unit tests can be evaluated automatically as part of CI checks. You can enable this by uncommenting the following line in `build.gradle`:
-
-```
-// Apply the testing plugin
-apply plugin: 'com.palantir.transforms.lang.pytest-defaults'
-```
-
-You can find an example unit test inside the `src/test` directory. Please refer to the [documentation](https://www.palantir.com/docs/foundry/transforms-python/unit-tests/#enabling-tests) for more information.

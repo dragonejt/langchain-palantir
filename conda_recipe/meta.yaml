@@ -1,19 +1,18 @@
 package:
   name: langchain-palantir
-  version: 0.0.4
+  version: 0.0.5
 source:
   path: ../src
 requirements:
   build:
-  - python
+  - python>=3.12.10
   - setuptools
   run:
   - palantir_models
   - langchain
   - langchain-core
-  - pytest
-  - python
   - langchain-openai
+  - python>=3.12.10
 test:
   requires:
   - pytest

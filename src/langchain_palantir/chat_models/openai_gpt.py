@@ -2,14 +2,13 @@ from typing import (
     Any,
     Callable,
     Dict,
-    Iterator,
     List,
     Literal,
-    Mapping,
     Optional,
     Sequence,
     Union,
 )
+from pydantic import Field
 from typing_extensions import override
 from json import loads, dumps
 from langchain_core.callbacks.manager import CallbackManagerForLLMRun
@@ -18,14 +17,10 @@ from langchain_openai import BaseChatOpenAI
 
 from langchain_core.outputs import (
     ChatGeneration,
-    ChatGenerationChunk,
     ChatResult,
-    GenerationChunk,
 )
-import logging
 from langchain_core.runnables import Runnable
 from langchain_core.tools import BaseTool
-from palantir_models.transforms import OpenAiGptChatLanguageModelInput
 from langchain_core.messages import (
     AIMessage,
     BaseMessage,
@@ -36,7 +31,6 @@ from langchain_core.messages import (
     ToolMessage,
 )
 from langchain_core.utils.function_calling import (
-    convert_to_openai_tool,
     convert_to_openai_function,
 )
 from palantir_models.models import OpenAiGptChatLanguageModel
@@ -58,13 +52,32 @@ from language_model_service_api.languagemodelservice_api_completion_v3 import (
 from language_model_service_api.languagemodelservice_api import (
     ChatMessage,
     ChatMessageRole,
-    FunctionCall,
 )
 
 
 class PalantirChatOpenAI(BaseChatOpenAI):
     model: OpenAiGptChatLanguageModel
-    temperature: float = 0
+    """OpenAiGptChatLanguageModel from palantir_models to use."""
+    temperature: Optional[float] = None
+    """What sampling temperature to use."""
+    max_retries: int = 0
+    """Maximum number of retries to make when generating."""
+    presence_penalty: Optional[float] = None
+    """Penalizes repeated tokens."""
+    frequency_penalty: Optional[float] = None
+    """Penalizes repeated tokens according to frequency."""
+    seed: Optional[int] = None
+    """Seed for generation"""
+    logit_bias: Optional[dict[int, float]] = None
+    """Modify the likelihood of specified tokens appearing in the completion."""
+    n: Optional[int] = None
+    """Number of chat completions to generate for each prompt."""
+    top_p: Optional[float] = None
+    """Total probability mass of tokens to consider at each step."""
+    max_tokens: Optional[int] = Field(default=None)
+    """Maximum number of tokens to generate."""
+    stop: Optional[List[str]] = Field(default=None, alias="stop_sequences")
+    """Default stop sequences."""
 
     @override
     def _generate(
@@ -76,12 +89,21 @@ class PalantirChatOpenAI(BaseChatOpenAI):
     ) -> ChatResult:
         request = GptChatCompletionRequest(
             messages=list(map(self._convert_to_gpt_chat_completion_request, messages)),
+            frequency_penalty=self.frequency_penalty,
+            logit_bias=self.logit_bias,
+            max_tokens=self.max_tokens,
+            n=self.n,
+            presence_penalty=self.presence_penalty,
+            seed=self.seed,
+            stop=stop or self.stop,
             temperature=self.temperature,
-            stop=stop,
+            tool_choice=kwargs.get("tool_choice"),
             tools=kwargs.get("tools"),
-            # tool_choice=kwargs.get("tool_choice"),
+            top_p=self.top_p,
         )
-        response = self.model.create_chat_completion(request)
+        response = self.model.create_chat_completion(
+            completion_request=request, max_rate_limit_retries=self.max_retries
+        )
         return ChatResult(
             generations=self._convert_from_gpt_chat_completion_response(response)
         )
@@ -126,14 +148,14 @@ class PalantirChatOpenAI(BaseChatOpenAI):
             # rules in LLM monitoring applications (e.g., in LangSmith users
             # can provide per token pricing for their model and monitor
             # costs for the given LLM.)
-            "model_name": "PalantirChatOpenAI",
+            "model_name": "PalantirChatOpenAI"
         }
 
     @property
     @override
     def _llm_type(self) -> str:
         """Get the type of language model used by this chat model. Used for logging purposes only."""
-        return "custom"
+        return "openai-chat"
 
     def _convert_to_gpt_chat_completion_request(
         self, message: BaseMessage
@@ -257,8 +279,10 @@ class PalantirChatOpenAI(BaseChatOpenAI):
         tool_choice: Optional[
             Union[dict, str, Literal["auto", "none", "required", "any"], bool]
         ],
-    ) -> GptToolChoice:
-        if tool_choice == "none":
+    ) -> Optional[GptToolChoice]:
+        if tool_choice is None:
+            return None
+        elif tool_choice == "none":
             return GptToolChoice(none=GptNoneToolChoice())
         elif tool_choice == "auto":
             return GptToolChoice(auto=GptAutoToolChoice())

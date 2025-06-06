@@ -1,7 +1,9 @@
 import logging
 from datetime import datetime, timezone
+from token import OP
+from typing import Union
 from unittest import TestCase
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, Mock
 
 from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
 from langchain_core.tools import tool
@@ -23,22 +25,24 @@ from langchain_palantir import PalantirChatOpenAI
 class TestOpenAiGpt(TestCase):
     model: OpenAiGptChatLanguageModel
     llm: PalantirChatOpenAI
+    using_live_model: bool
 
     def setUp(self) -> None:
         try:
             model = OpenAiGptChatLanguageModel.get("GPT_4_1")
-            self.model = MagicMock(wraps=model)
+            self.model = MagicMock(spec=OpenAiGptChatLanguageModel, wraps=model)
+            self.using_live_model = True
             logging.info("Using live LLM")
         except Exception as ex:
-            logging.warning("Could not get LLM due to %s", ex)
+            logging.exception("Could not get live_llm")
             self.model = MagicMock(spec=OpenAiGptChatLanguageModel)
-            self.model._model_api_name = ""
+            self.using_live_model = False
 
-        self.llm = PalantirChatOpenAI(model=self.model, check_fields=False)
+        self.llm = PalantirChatOpenAI(model=self.model)
 
     def test_palantir_chat_openai(self) -> None:
         question = "Why is the sky blue?"
-        if self.model._model_api_name == "":
+        if self.using_live_model is False:
             self.model.create_chat_completion.return_value = GptChatCompletionResponse(
                 choices=[
                     GptChatCompletionChoice(
@@ -82,7 +86,7 @@ class TestOpenAiGpt(TestCase):
         tools = {"date_time": date_time}
         llm_with_tools = self.llm.bind_tools(tools.values())
 
-        if self.model._model_api_name == "":
+        if self.using_live_model is False:
             self.model.create_chat_completion.return_value = GptChatCompletionResponse(
                 choices=[
                     GptChatCompletionChoice(
@@ -114,7 +118,7 @@ class TestOpenAiGpt(TestCase):
 
         answer = llm_with_tools.invoke(messages)
         self.model.create_chat_completion.assert_called_once()
-        self.assertTrue(isinstance(answer, AIMessage))
+        self.assertIsInstance(answer, AIMessage)
         self.assertEqual(len(answer.tool_calls), 1)
 
         messages.append(answer)
@@ -124,7 +128,7 @@ class TestOpenAiGpt(TestCase):
         final_answer = llm_with_tools.invoke(messages)
         self.assertEqual(self.model.create_chat_completion.call_count, 2)
 
-        if self.model._model_api_name != "":
+        if self.using_live_model is True:
             date = datetime.now(timezone.utc)
             self.assertIn(str(date.year), final_answer.content)
             self.assertIn(str(date.day), final_answer.content)

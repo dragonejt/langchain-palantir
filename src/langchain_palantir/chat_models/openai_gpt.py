@@ -1,3 +1,4 @@
+from json import dumps, loads
 from typing import (
     Any,
     Callable,
@@ -8,18 +9,9 @@ from typing import (
     Sequence,
     Union,
 )
-from pydantic import Field
-from typing_extensions import override
-from json import loads, dumps
-from langchain_core.callbacks.manager import CallbackManagerForLLMRun
-from langchain_core.language_models import LanguageModelInput, BaseChatModel
 
-from langchain_core.outputs import (
-    ChatGeneration,
-    ChatResult,
-)
-from langchain_core.runnables import Runnable
-from langchain_core.tools import BaseTool
+from langchain_core.callbacks.manager import CallbackManagerForLLMRun
+from langchain_core.language_models import BaseChatModel, LanguageModelInput
 from langchain_core.messages import (
     AIMessage,
     BaseMessage,
@@ -29,10 +21,19 @@ from langchain_core.messages import (
     ToolCall,
     ToolMessage,
 )
+from langchain_core.outputs import (
+    ChatGeneration,
+    ChatResult,
+)
+from langchain_core.runnables import Runnable
+from langchain_core.tools import BaseTool
 from langchain_core.utils.function_calling import (
     convert_to_openai_function,
 )
-from palantir_models.models import OpenAiGptChatLanguageModel
+from language_model_service_api.languagemodelservice_api import (
+    ChatMessage,
+    ChatMessageRole,
+)
 from language_model_service_api.languagemodelservice_api_completion_v3 import (
     FunctionToolCallInfo,
     GptAutoToolChoice,
@@ -48,10 +49,9 @@ from language_model_service_api.languagemodelservice_api_completion_v3 import (
     GptToolCallInfo,
     GptToolChoice,
 )
-from language_model_service_api.languagemodelservice_api import (
-    ChatMessage,
-    ChatMessageRole,
-)
+from palantir_models.models import OpenAiGptChatLanguageModel
+from pydantic import Field
+from typing_extensions import override
 
 
 class PalantirChatOpenAI(BaseChatModel):

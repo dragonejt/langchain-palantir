@@ -3,3 +3,5 @@
 # https://docs.python.org/3/reference/import.html#regular-packages
 
 from langchain_palantir.chat_models.openai_gpt import PalantirChatOpenAI
+
+__all__ = [PalantirChatOpenAI]

@@ -9,7 +9,6 @@ requirements:
   - setuptools
   run:
   - palantir_models
-  - langchain
   - langchain-core
   - python>=3.12.10
 test:

@@ -11,7 +11,6 @@ requirements:
   - palantir_models
   - langchain
   - langchain-core
-  - langchain-openai
   - python>=3.12.10
 test:
   requires:

@@ -35,7 +35,6 @@ conjure-python-client=2.12.0=pyhd8ed1ab_1 @ 2cda1526
 cpython=3.12.11=py312hd8ed1ab_0 @ 931c1ab2
 decorator=5.2.1=pyhd8ed1ab_0 @ 2cda1526
 dill=0.4.0=pyhd8ed1ab_0 @ 2cda1526
-distro=1.9.0=pyhd8ed1ab_1 @ 931c1ab2
 docutils=0.21.2=pyhd8ed1ab_1 @ 931c1ab2
 exceptiongroup=1.3.0=pyhd8ed1ab_0 @ 2cda1526
 foundry-ml-live-internal-api=1.1039.0=py_0 @ aeac16fb
@@ -52,13 +51,11 @@ idna=3.10=pyhd8ed1ab_1 @ 2cda1526
 importlib-metadata=8.7.0=pyhe01879c_1 @ 2cda1526
 iniconfig=2.0.0=pyhd8ed1ab_1 @ 2cda1526
 intel-openmp=2024.2.1=h57928b3_1083 @ 29f41490
-jiter=0.10.0=py312h2615798_0 @ 8c491a1c
 jsonpatch=1.33=pyhd8ed1ab_1 @ 931c1ab2
 jsonpointer=3.0.0=py312h2e8e312_1 @ 8c491a1c
 krb5=1.21.3=hdf4eb48_0 @ 29f41490
 langchain=0.3.25=pymin312_hff2d567_0 @ 931c1ab2
 langchain-core=0.3.63=pyhd8ed1ab_0 @ 931c1ab2
-langchain-openai=0.3.19=pyhd8ed1ab_0 @ 931c1ab2
 langchain-text-splitters=0.3.8=pyhd8ed1ab_0 @ 931c1ab2
 langsmith=0.3.42=pyhd8ed1ab_0 @ 931c1ab2
 language-model-service-api=0.2368.0=py_0 @ aeac16fb
@@ -101,7 +98,6 @@ mkl=2024.2.2=h66d3029_15 @ 29f41490
 models-api=0.1722.0=py_0 @ aeac16fb
 multidict=6.4.4=py312h31fea79_0 @ 8c491a1c
 numpy=1.26.4=py312h8753938_0 @ 8c491a1c
-openai=1.84.0=pyhd8ed1ab_0 @ 931c1ab2
 openssl=3.5.0=ha4e3fda_1 @ 29f41490
 orc=2.1.2=h35764e3_0 @ 29f41490
 orjson=3.10.18=py312h8422cdd_1 @ 8c491a1c
@@ -135,10 +131,9 @@ python_abi=3.12=7_cp312 @ 2cda1526
 pytz=2025.2=pyhd8ed1ab_0 @ 2cda1526
 pyyaml=6.0.2=py312h31fea79_2 @ 8c491a1c
 re2=2024.07.02=haf4117d_3 @ 29f41490
-regex=2024.11.6=py312h4389bb4_0 @ 8c491a1c
 requests=2.32.3=pyhd8ed1ab_1 @ 2cda1526
 requests-toolbelt=1.0.0=pyhd8ed1ab_1 @ 931c1ab2
-ruff=0.11.12=py312h24a9d25_0 @ 8c491a1c
+ruff=0.11.13=py312h24a9d25_0 @ 8c491a1c
 setuptools=70.0.0=pyhd8ed1ab_0 @ 2cda1526
 six=1.17.0=pyhd8ed1ab_0 @ 2cda1526
 snappy=1.2.1=h500f7fa_1 @ 29f41490
@@ -146,7 +141,6 @@ sniffio=1.3.1=pyhd8ed1ab_1 @ 931c1ab2
 sqlalchemy=2.0.41=py312h4389bb4_0 @ 8c491a1c
 tbb=2021.13.0=h62715c5_1 @ 29f41490
 tenacity=9.1.2=pyhd8ed1ab_0 @ 931c1ab2
-tiktoken=0.9.0=py312h21dd274_0 @ 8c491a1c
 tk=8.6.13=h2c6b04d_2 @ 29f41490
 tomli=2.2.1=pyhd8ed1ab_1 @ 2cda1526
 tqdm=4.67.1=pyhd8ed1ab_1 @ 931c1ab2
@@ -189,4 +183,4 @@ ri.stemma.main.repository.a9550cf0-488f-419f-b935-9004e067b93f
 ri.stemma.main.repository.a9550cf0-488f-419f-b935-9004e067b93f
 
 [conda lock version]
-v3 - 81d0afcfa8a9183ea07d9052dc49b817d116e5b00d58181333b771960f6dbe2a
+v3 - 63916fecd4dd40030a4a8700d92180f7d116e5b00d58181333b771960f6dbe2a

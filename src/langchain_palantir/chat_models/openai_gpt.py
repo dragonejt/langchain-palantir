@@ -8,6 +8,7 @@ from typing import (
     Optional,
     Sequence,
     Union,
+    override,
 )
 
 from langchain_core.callbacks.manager import CallbackManagerForLLMRun
@@ -51,7 +52,6 @@ from language_model_service_api.languagemodelservice_api_completion_v3 import (
 )
 from palantir_models.models import OpenAiGptChatLanguageModel
 from pydantic import Field
-from typing_extensions import override
 
 
 class PalantirChatOpenAI(BaseChatModel):

@@ -1,9 +1,7 @@
 import logging
 from datetime import datetime, timezone
-from token import OP
-from typing import Union
 from unittest import TestCase
-from unittest.mock import MagicMock, Mock
+from unittest.mock import MagicMock
 
 from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
 from langchain_core.tools import tool
@@ -33,7 +31,7 @@ class TestOpenAiGpt(TestCase):
             self.model = MagicMock(spec=OpenAiGptChatLanguageModel, wraps=model)
             self.using_live_model = True
             logging.info("Using live LLM")
-        except Exception as ex:
+        except Exception:
             logging.exception("Could not get live_llm")
             self.model = MagicMock(spec=OpenAiGptChatLanguageModel)
             self.using_live_model = False

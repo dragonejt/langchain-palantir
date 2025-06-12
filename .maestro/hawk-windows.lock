@@ -3,13 +3,8 @@
 
 [conda]
 _python_abi3_support=1.0=hd8ed1ab_2 @ 2cda1526
-aiohappyeyeballs=2.6.1=pyhd8ed1ab_0 @ 2cda1526
-aiohttp=3.12.7=py312h31fea79_0 @ 8c491a1c
-aiosignal=1.3.2=pyhd8ed1ab_0 @ 2cda1526
 annotated-types=0.7.0=pyhd8ed1ab_1 @ 931c1ab2
 anyio=4.9.0=pyh29332c3_0 @ 931c1ab2
-async-timeout=4.0.3=pyhd8ed1ab_0 @ 931c1ab2
-attrs=25.3.0=pyh71513ae_0 @ 2cda1526
 aws-c-auth=0.9.0=hf0c1250_10 @ 29f41490
 aws-c-cal=0.9.1=hd8a8e38_0 @ 29f41490
 aws-c-common=0.12.3=h2466b09_0 @ 29f41490
@@ -38,9 +33,7 @@ dill=0.4.0=pyhd8ed1ab_0 @ 2cda1526
 docutils=0.21.2=pyhd8ed1ab_1 @ 931c1ab2
 exceptiongroup=1.3.0=pyhd8ed1ab_0 @ 2cda1526
 foundry-ml-live-internal-api=1.1039.0=py_0 @ aeac16fb
-frozenlist=1.6.0=py312h501e844_0 @ 8c491a1c
 future=1.0.0=pyhd8ed1ab_2 @ 2cda1526
-greenlet=3.2.2=py312h275cf98_0 @ 8c491a1c
 h11=0.16.0=pyhd8ed1ab_0 @ 931c1ab2
 h2=4.2.0=pyhd8ed1ab_0 @ 2cda1526
 hpack=4.1.0=pyhd8ed1ab_0 @ 2cda1526
@@ -54,9 +47,7 @@ intel-openmp=2024.2.1=h57928b3_1083 @ 29f41490
 jsonpatch=1.33=pyhd8ed1ab_1 @ 931c1ab2
 jsonpointer=3.0.0=py312h2e8e312_1 @ 8c491a1c
 krb5=1.21.3=hdf4eb48_0 @ 29f41490
-langchain=0.3.25=pymin312_hff2d567_0 @ 931c1ab2
 langchain-core=0.3.63=pyhd8ed1ab_0 @ 931c1ab2
-langchain-text-splitters=0.3.8=pyhd8ed1ab_0 @ 931c1ab2
 langsmith=0.3.42=pyhd8ed1ab_0 @ 931c1ab2
 language-model-service-api=0.2368.0=py_0 @ aeac16fb
 libabseil=20250127.1=cxx17_h4eb7d71_0 @ 29f41490
@@ -96,7 +87,6 @@ media-reference-api=0.1841.0=py_0 @ aeac16fb
 mio-api=0.1841.0=py_0 @ aeac16fb
 mkl=2024.2.2=h66d3029_15 @ 29f41490
 models-api=0.1722.0=py_0 @ aeac16fb
-multidict=6.4.4=py312h31fea79_0 @ 8c491a1c
 numpy=1.26.4=py312h8753938_0 @ 8c491a1c
 openssl=3.5.0=ha4e3fda_1 @ 29f41490
 orc=2.1.2=h35764e3_0 @ 29f41490
@@ -108,7 +98,6 @@ palantir_models=0.1745.0=py312 @ a7991665
 pandas=2.2.3=py312h72972c8_3 @ 8c491a1c
 pip=25.1.1=pyh8b19718_0 @ 2cda1526
 pluggy=1.6.0=pyhd8ed1ab_0 @ 2cda1526
-propcache=0.3.1=py312h31fea79_0 @ 8c491a1c
 py-rattler=0.14.0=py39hb65b0b0_0 @ 8c491a1c
 py4j=0.10.9.7=pyhd8ed1ab_0 @ 586315a4
 pyarrow=20.0.0=py312h2e8e312_0 @ 8c491a1c
@@ -138,7 +127,6 @@ setuptools=70.0.0=pyhd8ed1ab_0 @ 2cda1526
 six=1.17.0=pyhd8ed1ab_0 @ 2cda1526
 snappy=1.2.1=h500f7fa_1 @ 29f41490
 sniffio=1.3.1=pyhd8ed1ab_1 @ 931c1ab2
-sqlalchemy=2.0.41=py312h4389bb4_0 @ 8c491a1c
 tbb=2021.13.0=h62715c5_1 @ 29f41490
 tenacity=9.1.2=pyhd8ed1ab_0 @ 931c1ab2
 tk=8.6.13=h2c6b04d_2 @ 29f41490
@@ -159,7 +147,6 @@ vs2015_runtime=14.42.34438=h7142326_26 @ 29f41490
 wheel=0.45.1=pyhd8ed1ab_1 @ 2cda1526
 win_inet_pton=1.1.0=pyh7428d3b_8 @ 2cda1526
 yaml=0.2.5=h8ffe710_2 @ 5332150e
-yarl=1.20.0=py312h31fea79_0 @ 8c491a1c
 zipp=3.22.0=pyhd8ed1ab_0 @ 2cda1526
 zstandard=0.23.0=py312h4389bb4_2 @ 8c491a1c
 zstd=1.5.7=hbeecb71_2 @ 29f41490
@@ -183,4 +170,4 @@ ri.stemma.main.repository.a9550cf0-488f-419f-b935-9004e067b93f
 ri.stemma.main.repository.a9550cf0-488f-419f-b935-9004e067b93f
 
 [conda lock version]
-v3 - 63916fecd4dd40030a4a8700d92180f7d116e5b00d58181333b771960f6dbe2a
+v3 - 7a38f525bd9618f01fdeea9dc2018059d116e5b00d58181333b771960f6dbe2a

@@ -87,7 +87,7 @@ class PalantirChatOpenAI(BaseChatModel):
         **kwargs: Any,
     ) -> ChatResult:
         request = GptChatCompletionRequest(
-            messages=list(map(self._convert_to_gpt_chat_completion_request, messages)),
+            messages=list(map(self._convert_to_chat_message, messages)),
             frequency_penalty=self.frequency_penalty,
             logit_bias=self.logit_bias,
             max_tokens=self.max_tokens,
@@ -156,9 +156,7 @@ class PalantirChatOpenAI(BaseChatModel):
         """Get the type of language model used by this chat model. Used for logging purposes only."""
         return "openai-chat"
 
-    def _convert_to_gpt_chat_completion_request(
-        self, message: BaseMessage
-    ) -> ChatMessage:
+    def _convert_to_chat_message(self, message: BaseMessage) -> ChatMessage:
         if isinstance(message, HumanMessage):
             return ChatMessage(
                 name=message.name,
@@ -188,7 +186,11 @@ class PalantirChatOpenAI(BaseChatModel):
                 tool_call_id=message.tool_call_id,
             )
         elif isinstance(message, FunctionMessage):
-            return ChatMessage(ChatMessageRole.FUNCTION, str(message.content))
+            return ChatMessage(
+                name=message.name,
+                role=ChatMessageRole.FUNCTION,
+                content=str(message.content),
+            )
         else:
             raise ValueError(f"Unknown message type: {message.type}")
 

@@ -73,13 +73,13 @@ class TestOpenAiGpt(TestCase):
         ]
 
         @tool
-        def date_time() -> datetime:
+        def date_time() -> str:
             """
-            Returns the current datetime in python.
+            Returns the current datetime in ISO format.
             Parameters: None
             """
 
-            return datetime.now(timezone.utc)
+            return datetime.now(timezone.utc).isoformat()
 
         tools = {"date_time": date_time}
         llm_with_tools = self.llm.bind_tools(tools.values())

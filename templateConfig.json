@@ -1,6 +1,6 @@
 {
   "parentTemplateId" : "python-library",
   "childTemplatesByPath" : { },
-  "parentTemplateVersion" : "1.934.0",
+  "parentTemplateVersion" : "1.950.0",
   "childTemplateVersionsByPath" : { }
 }

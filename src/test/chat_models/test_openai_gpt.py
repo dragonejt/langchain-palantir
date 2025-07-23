@@ -32,7 +32,7 @@ class TestOpenAiGpt(TestCase):
             self.using_live_model = True
             logging.info("Using live LLM")
         except Exception:
-            logging.exception("Could not get live_llm")
+            logging.exception("Could not get live llm")
             self.model = MagicMock(spec=OpenAiGptChatLanguageModel)
             self.using_live_model = False
 

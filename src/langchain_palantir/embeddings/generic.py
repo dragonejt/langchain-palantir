@@ -9,8 +9,11 @@ from language_model_service_api.languagemodelservice_api_embeddings_v3 import (
 from palantir_models.models import GenericEmbeddingModel
 
 
-class PalantirOpenAIEmbeddings(Embeddings):
+class PalantirGenericEmbeddings(Embeddings):
     model: GenericEmbeddingModel
+
+    def __init__(self, model: GenericEmbeddingModel):
+        self.model = model
 
     @override
     def embed_documents(self, texts: list[str]) -> list[list[float]]:

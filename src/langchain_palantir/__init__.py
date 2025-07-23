@@ -3,5 +3,6 @@
 # https://docs.python.org/3/reference/import.html#regular-packages
 
 from langchain_palantir.chat_models.openai_gpt import PalantirChatOpenAI
+from langchain_palantir.embeddings.generic import PalantirGenericEmbeddings
 
-__all__ = [PalantirChatOpenAI]
+__all__ = [PalantirChatOpenAI, PalantirGenericEmbeddings]

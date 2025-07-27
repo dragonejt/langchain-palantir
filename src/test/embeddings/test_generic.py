@@ -28,12 +28,12 @@ class TestPalantirGenericEmbeddings(TestCase):
         self.embedding = PalantirGenericEmbeddings(model=self.model)
 
     def test_embed_query(self) -> None:
-        answer = self.embedding.embed_query("Hello World")
-
         if self.using_live_model is False:
             self.model.create_embeddings.return_value = GenericEmbeddingsResponse(
                 embeddings=[[0, 0, 0]], usage=EmbeddingUsage(input_tokens=3)
             )
 
+        embeddings = self.embedding.embed_query("Hello World")
+
         self.model.create_embeddings.assert_called_once()
-        self.assertGreater(len(answer), 0)
+        self.assertGreater(len(embeddings), 0)

@@ -37,3 +37,16 @@ class TestPalantirGenericEmbeddings(TestCase):
 
         self.model.create_embeddings.assert_called_once()
         self.assertGreater(len(embeddings), 0)
+
+    def test_embed_documents(self) -> None:
+        texts = ["Hello World", "Hello AI"]
+        if self.using_live_model is False:
+            self.model.create_embeddings.return_value = GenericEmbeddingsResponse(
+                embeddings=[[0 for token in text] for text in texts],
+                usage=EmbeddingUsage(input_tokens=4),
+            )
+
+        embeddings = self.embedding.embed_documents(texts)
+        self.model.create_embeddings.assert_called_once()
+        for embedding in embeddings:
+            self.assertGreater(len(embedding), 0)

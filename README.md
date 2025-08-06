@@ -7,6 +7,7 @@ Install langchain-palantir like any other Palantir conda package, with the Libra
 
 ## Usage
 langchain-palantir can be used like any other LangChain extension.
+
 ### Basic Tool Calling Workflow
 ```python
 model = OpenAiGptChatLanguageModel.get("GPT_4_1")
@@ -34,4 +35,13 @@ for tool_call in answer.tool_calls:
   messages.append(tools[tool_call["name"]].invoke(tool_call))
 
 final_answer = llm_with_tools.invoke(messages)
+```
+
+### Using Palantir Embedding Models
+```python
+model = GenericEmbeddingModel.get("Text_Embedding_3_Small")
+texts = ["Hello World", "Hello AI"]
+embedding = PalantirGenericEmbeddings(model=model)
+
+embeddings = embedding.embed_documents(texts)
 ```

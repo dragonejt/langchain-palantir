@@ -17,6 +17,7 @@ test:
   - pytest-transforms
   - pytest-randomly
   - ruff
+  - mlflow
 build:
   script: python setup.py install --single-version-externally-managed --record=record.txt
   noarch: python

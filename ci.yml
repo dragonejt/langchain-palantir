@@ -14,7 +14,7 @@ java-version: java_17
 
 env:
   transformsGradleDistributionUrl:
-    uri-role: gradle-distribution-7-6-4
+    uri-role: gradle-distribution-8-12-1
   ORG_GRADLE_PROJECT_artifactsUri:
     uri-role: foundry-artifacts-api
   ORG_GRADLE_PROJECT_condaInstallerUri:
@@ -66,6 +66,13 @@ jobs:
       if [ ! -z "${JEMMA_TAG:-}" ]; 
       then
         export ORG_GRADLE_PROJECT_jemmaTag="${JEMMA_TAG}"
+      fi
+      
+      maestroPackageBuildingVersion=1
+      maestroPackageBuildingVersionJemmaVersion=${JEMMA_MAESTRO_PACKAGE_BUILDING_VERSION:-0}
+      if [ "$maestroPackageBuildingVersion" -eq "$maestroPackageBuildingVersionJemmaVersion" ];
+      then
+        export ORG_GRADLE_PROJECT_enableMaestroPackageBuildingVersion="true";
       fi
       
       ./gradleww --no-daemon --build-cache --stacktrace check patch publish

@@ -1,6 +1,6 @@
 package:
   name: langchain-palantir
-  version: 0.0.5
+  version: 0.0.7
 source:
   path: ../src
 requirements:
@@ -8,9 +8,9 @@ requirements:
   - python>=3.12.10
   - setuptools
   run:
-  - palantir_models
   - langchain-core
   - python>=3.12.10
+  - palantir_models
 test:
   requires:
   - pytest

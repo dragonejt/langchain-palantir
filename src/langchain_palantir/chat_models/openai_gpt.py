@@ -8,7 +8,6 @@ Classes:
     PalantirChatOpenAI: LangChain chat model implementation using Palantir's
         OpenAI GPT models with full support for chat completions, function calling,
         and tool binding.
-    ```
 """
 
 from json import dumps, loads
@@ -75,21 +74,21 @@ class PalantirChatOpenAI(BaseChatModel):
     standard OpenAI parameters like temperature, max_tokens, etc.
 
     Attributes:
-            model (OpenAiGptChatLanguageModel): OpenAiGptChatLanguageModel from
-                palantir_models to use.
-            temperature (Optional[float]): What sampling temperature to use.
-            max_retries (int): Maximum number of retries to make when generating.
-            presence_penalty (Optional[float]): Penalizes repeated tokens.
-            frequency_penalty (Optional[float]): Penalizes repeated tokens according
-                to frequency.
-            seed (Optional[int]): Seed for generation.
-            logit_bias (Optional[dict[int, float]]): Modify the likelihood of specified
-                tokens appearing in the completion.
-            n (Optional[int]): Number of chat completions to generate for each prompt.
-            top_p (Optional[float]): Total probability mass of tokens to consider at
-                each step.
-            max_tokens (Optional[int]): Maximum number of tokens to generate.
-            stop (Optional[List[str]]): Default stop sequences.
+        model (OpenAiGptChatLanguageModel): OpenAiGptChatLanguageModel from
+            palantir_models to use.
+        temperature (Optional[float]): What sampling temperature to use.
+        max_retries (int): Maximum number of retries to make when generating.
+        presence_penalty (Optional[float]): Penalizes repeated tokens.
+        frequency_penalty (Optional[float]): Penalizes repeated tokens according
+            to frequency.
+        seed (Optional[int]): Seed for generation.
+        logit_bias (Optional[dict[int, float]]): Modify the likelihood of specified
+            tokens appearing in the completion.
+        n (Optional[int]): Number of chat completions to generate for each prompt.
+        top_p (Optional[float]): Total probability mass of tokens to consider at
+            each step.
+        max_tokens (Optional[int]): Maximum number of tokens to generate.
+        stop (Optional[List[str]]): Default stop sequences.
     """
 
     model: OpenAiGptChatLanguageModel

@@ -8,19 +8,6 @@ Classes:
     PalantirChatOpenAI: LangChain chat model implementation using Palantir's
         OpenAI GPT models with full support for chat completions, function calling,
         and tool binding.
-
-Example:
-    ```python
-    model = OpenAiGptChatLanguageModel(...)
-    chat = PalantirChatOpenAI(
-        model=model,
-        temperature=0.7,
-        max_tokens=1000,
-        stop=["Human:", "Assistant:"]
-    )
-
-    messages = [HumanMessage(content="Explain quantum computing")]
-    result = chat.invoke([messages])
     ```
 """
 
@@ -103,20 +90,6 @@ class PalantirChatOpenAI(BaseChatModel):
                 each step.
             max_tokens (Optional[int]): Maximum number of tokens to generate.
             stop (Optional[List[str]]): Default stop sequences.
-
-    Example:
-        ```python
-        model = OpenAiGptChatLanguageModel(...)
-        chat = PalantirChatOpenAI(
-            model=model,
-            temperature=0.7,
-            max_tokens=1000,
-            stop=["Human:", "Assistant:"]
-        )
-
-        messages = [HumanMessage(content="Explain quantum computing")]
-        result = chat.invoke([messages])
-        ```
     """
 
     model: OpenAiGptChatLanguageModel
@@ -223,16 +196,6 @@ class PalantirChatOpenAI(BaseChatModel):
             Runnable[LanguageModelInput, BaseMessage]: A new runnable instance
                 with tools bound, maintaining the same interface as the base
                 chat model.
-
-        Example:
-            ```python
-            @tool
-            def date_time() -> str:
-                return datetime.now(timezone.utc).isoformat()
-
-            tools = {"date_time": date_time}
-            llm_with_tools = self.llm.bind_tools(tools.values())
-            ```
         """
         formatted_tools = list(
             map(

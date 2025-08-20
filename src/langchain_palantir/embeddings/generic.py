@@ -7,21 +7,6 @@ Palantir's embedding capabilities.
 Classes:
     PalantirGenericEmbeddings: LangChain embeddings implementation using Palantir's
         generic embedding models.
-
-Example:
-    Basic usage with a Palantir generic embedding model:
-
-    ```python
-    model = GenericEmbeddingModel(...)
-    embeddings = PalantirGenericEmbeddings(model)
-
-    query_embedding = embeddings.embed_query("What is machine learning?")
-
-    doc_embeddings = embeddings.embed_documents([
-        "Machine learning is a subset of AI.",
-        "Deep learning uses neural networks."
-    ])
-    ```
 """
 
 from typing import override
@@ -45,16 +30,6 @@ class PalantirGenericEmbeddings(Embeddings):
     Attributes:
         model (GenericEmbeddingModel): The Palantir generic embedding model instance
             used for generating embeddings.
-
-    Example:
-        ```python
-        model = GenericEmbeddingModel(...)
-        embeddings = PalantirGenericEmbeddings(model)
-
-        # Generate embeddings
-        query_emb = embeddings.embed_query("search query")
-        doc_embs = embeddings.embed_documents(["doc1", "doc2"])
-        ```
     """
 
     model: GenericEmbeddingModel
@@ -88,15 +63,6 @@ class PalantirGenericEmbeddings(Embeddings):
         Raises:
             Exception: If the embedding service returns an error or if the model
                 is not properly configured.
-
-        Example:
-            ```python
-            documents = [
-                "The quick brown fox jumps over the lazy dog.",
-                "Machine learning is transforming various industries."
-            ]
-            embeddings = embedding_model.embed_documents(documents)
-            ```
         """
         request = GenericEmbeddingsRequest(inputs=texts)
         response = self.model.create_embeddings(request)
@@ -121,12 +87,6 @@ class PalantirGenericEmbeddings(Embeddings):
         Raises:
             Exception: If the embedding service returns an error or if the model
                 is not properly configured.
-
-        Example:
-            ```python
-            query = "What are the benefits of renewable energy?"
-            query_embedding = embedding_model.embed_query(query)
-            ```
         """
         request = GenericEmbeddingsRequest(
             inputs=[text], input_type=EmbeddingInputType(query=QueryEmbeddingContent())

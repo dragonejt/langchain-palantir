@@ -3,12 +3,30 @@
 langchain-palantir is a library that allows users to call Palantir-provided LLMs in the LangChain framework. It provides LangChain wrappers around Palantir-provided LLMs, and can be used anywhere Palantir-provided LLMs can be used.
 
 ## Installation
+
 Install langchain-palantir like any other Palantir conda package, with the Libraries left sidebar in a Code Repository or Code Workspace. langchain-palantir currently requires Python version 3.12.10 or later.
 
+## Supported Features:
+
+### Chat Models
+
+| Chat Model              | Model Family     | Chat Completions | Tool Calling | Image Input |
+| ----------------------- | ---------------- | ---------------- | ------------ | ----------- |
+| `PalantirChatOpenAI`    | OpenAI GPT       | ✅               | ✅           | ❌          |
+| `PalantirChatAnthropic` | Anthropic Claude | ✅               | ✅           | ❌          |
+
+### Embedding Models
+
+| Embedding Model             | Embed Query | Embed Documents |
+| --------------------------- | ----------- | --------------- |
+| `PalantirGenericEmbeddings` | ✅          | ✅              |
+
 ## Usage
+
 langchain-palantir can be used like any other LangChain extension.
 
 ### Basic Tool Calling Workflow
+
 ```python
 model = OpenAiGptChatLanguageModel.get("GPT_4_1")
 messages = [
@@ -38,6 +56,7 @@ final_answer = llm_with_tools.invoke(messages)
 ```
 
 ### Using Palantir Embedding Models
+
 ```python
 model = GenericEmbeddingModel.get("Text_Embedding_3_Small")
 texts = ["Hello World", "Hello AI"]

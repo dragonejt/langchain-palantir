@@ -34,6 +34,7 @@ from langchain_core.messages import (
     ToolCall,
     ToolMessage,
 )
+from langchain_core.messages.ai import UsageMetadata
 from langchain_core.outputs import (
     ChatGeneration,
     ChatResult,
@@ -196,17 +197,14 @@ class PalantirChatOpenAI(BaseChatModel):
                 with tools bound, maintaining the same interface as the base
                 chat model.
         """
-        formatted_tools = list(
-            map(
-                lambda tool: GptTool(
-                    function=GptFunctionTool(
-                        **convert_to_openai_function(tool, strict=strict)
-                    )
-                ),
-                tools,
+        formatted_tools = [
+            GptTool(
+                function=GptFunctionTool(
+                    **convert_to_openai_function(tool, strict=strict)
+                )
             )
-        )
-
+            for tool in tools
+        ]
         return super().bind(
             tools=formatted_tools,
             tool_choice=self._convert_to_gpt_tool_choice(tool_choice),
@@ -240,7 +238,7 @@ class PalantirChatOpenAI(BaseChatModel):
         Returns:
             str: The language model type identifier used for logging purposes.
         """
-        return "openai-chat"
+        return "palantir-openai-chat"
 
     def _convert_to_chat_message(self, message: BaseMessage) -> ChatMessage:
         """Convert a LangChain BaseMessage to Palantir ChatMessage format.
@@ -260,13 +258,13 @@ class PalantirChatOpenAI(BaseChatModel):
             return ChatMessage(
                 name=message.name,
                 role=ChatMessageRole.USER,
-                content=str(message.content),
+                content=message.text(),
             )
         elif isinstance(message, AIMessage):
             return ChatMessage(
                 name=message.name,
                 role=ChatMessageRole.ASSISTANT,
-                content=str(message.content),
+                content=message.text(),
                 tool_calls=list(
                     map(self._convert_to_gpt_tool_call, message.tool_calls)
                 ),
@@ -275,23 +273,27 @@ class PalantirChatOpenAI(BaseChatModel):
             return ChatMessage(
                 name=message.name,
                 role=ChatMessageRole.SYSTEM,
-                content=str(message.content),
+                content=message.text(),
             )
         elif isinstance(message, ToolMessage):
             return ChatMessage(
                 name=message.name,
                 role=ChatMessageRole.TOOL,
-                content=str(message.content),
+                content=message.text(),
                 tool_call_id=message.tool_call_id,
             )
         elif isinstance(message, FunctionMessage):
             return ChatMessage(
                 name=message.name,
                 role=ChatMessageRole.FUNCTION,
-                content=str(message.content),
+                content=message.text(),
             )
         else:
-            raise ValueError(f"Unknown message type: {message.type}")
+            return ChatMessage(
+                name=message.name,
+                role=ChatMessageRole.UNKNOWN,
+                content=message.text(),
+            )
 
     def _convert_from_gpt_chat_completion_response(
         self, response: GptChatCompletionResponse
@@ -309,11 +311,6 @@ class PalantirChatOpenAI(BaseChatModel):
         Raises:
             ValueError: If an unknown message role is encountered in the response.
         """
-        usage_metadata = {
-            "input_tokens": response.usage.prompt_tokens,
-            "output_tokens": response.usage.completion_tokens,
-            "total_tokens": response.usage.total_tokens,
-        }
         generations = []
         for choice in response.choices:
             if choice.message.role == ChatMessageRole.USER:
@@ -321,7 +318,6 @@ class PalantirChatOpenAI(BaseChatModel):
                     ChatGeneration(
                         message=HumanMessage(
                             content=choice.message.content or "",
-                            usage_metadata=usage_metadata,
                         )
                     )
                 )
@@ -330,7 +326,11 @@ class PalantirChatOpenAI(BaseChatModel):
                     ChatGeneration(
                         message=AIMessage(
                             content=choice.message.content or "",
-                            usage_metadata=usage_metadata,
+                            usage_metadata=UsageMetadata(
+                                input_tokens=response.usage.prompt_tokens,
+                                output_tokens=response.usage.completion_tokens,
+                                total_tokens=response.usage.total_tokens,
+                            ),
                             tool_calls=list(
                                 map(
                                     self._convert_from_gpt_tool_call,
@@ -345,7 +345,6 @@ class PalantirChatOpenAI(BaseChatModel):
                     ChatGeneration(
                         message=SystemMessage(
                             content=choice.message.content or "",
-                            usage_metadata=usage_metadata,
                         )
                     )
                 )
@@ -354,7 +353,6 @@ class PalantirChatOpenAI(BaseChatModel):
                     ChatGeneration(
                         message=ToolMessage(
                             content=choice.message.content or "",
-                            usage_metadata=usage_metadata,
                         )
                     )
                 )
@@ -426,7 +424,7 @@ class PalantirChatOpenAI(BaseChatModel):
             return GptToolChoice(none=GptNoneToolChoice())
         elif tool_choice == "auto":
             return GptToolChoice(auto=GptAutoToolChoice())
-        elif tool_choice == "require":
+        elif tool_choice == "required":
             return GptToolChoice(required=GptRequiredToolChoice())
         else:
             return GptToolChoice(

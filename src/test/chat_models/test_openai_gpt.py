@@ -1,9 +1,7 @@
 import logging
-from time import time
 from datetime import datetime, timezone
 from unittest import TestCase
 from unittest.mock import MagicMock
-import mlflow
 from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
 from langchain_core.tools import tool
 from language_model_service_api.languagemodelservice_api import ChatMessageRole
@@ -17,7 +15,6 @@ from language_model_service_api.languagemodelservice_api_completion_v3 import (
     GptToolCallInfo,
 )
 from palantir_models.models import OpenAiGptChatLanguageModel
-from palantir_models.code_workspaces import ModelOutput
 from langchain_palantir import PalantirChatOpenAI
 
 
@@ -68,7 +65,7 @@ class TestOpenAiGpt(TestCase):
         self.model.create_chat_completion.assert_called_once()
         self.assertIn("rayleigh scattering", answer.content.lower())
 
-    def test_palantir_tool_calling(self) -> None:
+    def test_openai_tool_calling(self) -> None:
         messages: list[BaseMessage] = [
             HumanMessage("Using the date_time tool, what is today's date?")
         ]
@@ -131,42 +128,3 @@ class TestOpenAiGpt(TestCase):
             date = datetime.now(timezone.utc)
             self.assertIn(str(date.year), final_answer.content)
             self.assertIn(str(date.day), final_answer.content)
-
-    def test_palantir_mlflow(self) -> None:
-        if self.using_live_model is False:
-            return
-
-        model_output = ModelOutput("langchain-palantir")
-
-        experiment = model_output.create_experiment(name=f"langchain-palantir-{time()}")
-        with experiment.as_mlflow_run():
-            mlflow.langchain.autolog()
-            messages: list[BaseMessage] = [
-                HumanMessage("Using the date_time tool, what is today's date?")
-            ]
-
-            @tool
-            def date_time() -> str:
-                """
-                Returns the current datetime in ISO format.
-                Parameters: None
-                """
-
-                return datetime.now(timezone.utc).isoformat()
-
-            tools = {"date_time": date_time}
-            llm_with_tools = self.llm.bind_tools(tools.values())
-
-            answer = llm_with_tools.invoke(messages)
-            self.model.create_chat_completion.assert_called_once()
-            self.assertIsInstance(answer, AIMessage)
-            self.assertEqual(len(answer.tool_calls), 1)
-
-            messages.append(answer)
-            for tool_call in answer.tool_calls:
-                messages.append(tools[tool_call["name"]].invoke(tool_call))
-
-            final_answer = llm_with_tools.invoke(messages)
-            self.assertEqual(self.model.create_chat_completion.call_count, 2)
-
-        model_output.publish(experiment)

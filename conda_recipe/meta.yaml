@@ -11,13 +11,13 @@ requirements:
   - langchain-core
   - python>=3.12.10
   - palantir_models
+  - language-model-service-api
 test:
   requires:
   - pytest
   - pytest-transforms
   - pytest-randomly
   - ruff
-  - mlflow
 build:
   script: python setup.py install --single-version-externally-managed --record=record.txt
   noarch: python

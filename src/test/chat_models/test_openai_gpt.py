@@ -14,8 +14,13 @@ from language_model_service_api.languagemodelservice_api_completion_v3 import (
     GptToolCall,
     GptToolCallInfo,
 )
-from palantir_models.models import OpenAiGptChatLanguageModel
+from palantir_models.models import (
+    OpenAiGptChatLanguageModel,
+    OpenAiGptChatWithVisionLanguageModel,
+)
+from pathlib import Path
 from langchain_palantir import PalantirChatOpenAI
+from base64 import b64encode
 
 
 class TestOpenAiGpt(TestCase):
@@ -25,13 +30,15 @@ class TestOpenAiGpt(TestCase):
 
     def setUp(self) -> None:
         try:
-            model = OpenAiGptChatLanguageModel.get("GPT_4_1")
-            self.model = MagicMock(spec=OpenAiGptChatLanguageModel, wraps=model)
+            model = OpenAiGptChatWithVisionLanguageModel.get("GPT_4_1")
+            self.model = MagicMock(
+                spec=OpenAiGptChatWithVisionLanguageModel, wraps=model
+            )
             self.using_live_model = True
             logging.info("Using live LLM")
         except Exception:
             logging.exception("Could not get live llm")
-            self.model = MagicMock(spec=OpenAiGptChatLanguageModel)
+            self.model = MagicMock(spec=OpenAiGptChatWithVisionLanguageModel)
             self.using_live_model = False
 
         self.llm = PalantirChatOpenAI(model=self.model)
@@ -128,3 +135,48 @@ class TestOpenAiGpt(TestCase):
             date = datetime.now(timezone.utc)
             self.assertIn(str(date.year), final_answer.content)
             self.assertIn(str(date.day), final_answer.content)
+
+    def test_openai_vision(self) -> None:
+        with open(Path(__file__).parent / "pizza.jpeg", "rb") as pizza_jpg:
+            img_data = b64encode(pizza_jpg.read()).decode("utf-8")
+
+            messages: list[BaseMessage] = [
+                HumanMessage("What is in the following image?"),
+                HumanMessage(
+                    [
+                        {
+                            "type": "image",
+                            "source_type": "base64",
+                            "data": img_data,
+                            "mime_type": "image/jpeg",
+                        }
+                    ]
+                ),
+            ]
+
+            if self.using_live_model is False:
+                self.model.create_chat_completion.return_value = GptChatCompletionResponse(
+                    choices=[
+                        GptChatCompletionChoice(
+                            message=GptChatCompletionChoiceMessage(
+                                role=ChatMessageRole.ASSISTANT,
+                                content="The image shows a freshly baked pizza topped with slices of pepperoni, black olives, melted cheese, and garnished with fresh basil leaves in the center.",
+                                tool_calls=[],
+                            ),
+                            finish_reason="stop",
+                            index=0,
+                        )
+                    ],
+                    created=int(datetime.now(timezone.utc).timestamp()),
+                    id="",
+                    model="GPT_4_1",
+                    object="chat.completion",
+                    usage=GptChatUsage(
+                        completion_tokens=10, prompt_tokens=5, total_tokens=15
+                    ),
+                )
+
+            answer = self.llm.invoke(messages)
+
+            self.model.create_chat_completion.assert_called_once()
+            self.assertIn("pizza", answer.content.lower())

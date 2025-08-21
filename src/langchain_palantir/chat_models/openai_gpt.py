@@ -45,14 +45,17 @@ from langchain_core.utils.function_calling import (
     convert_to_openai_function,
 )
 from language_model_service_api.languagemodelservice_api import (
+    Base64ImageContent,
     ChatMessage,
+    ChatMessageContent,
     ChatMessageRole,
+    MultiContentChatMessage,
 )
 from language_model_service_api.languagemodelservice_api_completion_v3 import (
     FunctionToolCallInfo,
     GptAutoToolChoice,
-    GptChatCompletionRequest,
     GptChatCompletionResponse,
+    GptChatWithVisionCompletionRequest,
     GptFunctionTool,
     GptFunctionToolChoice,
     GptNoneToolChoice,
@@ -63,7 +66,7 @@ from language_model_service_api.languagemodelservice_api_completion_v3 import (
     GptToolCallInfo,
     GptToolChoice,
 )
-from palantir_models.models import OpenAiGptChatLanguageModel
+from palantir_models.models import OpenAiGptChatWithVisionLanguageModel
 from pydantic import Field
 
 
@@ -92,7 +95,7 @@ class PalantirChatOpenAI(BaseChatModel):
         stop (Optional[List[str]]): Default stop sequences.
     """
 
-    model: OpenAiGptChatLanguageModel
+    model: OpenAiGptChatWithVisionLanguageModel
     temperature: Optional[float] = None
     max_retries: int = 0
     presence_penalty: Optional[float] = None
@@ -137,7 +140,7 @@ class PalantirChatOpenAI(BaseChatModel):
             ValueError: If an unsupported message type is provided.
             Exception: If the underlying model API call fails after retries.
         """
-        request = GptChatCompletionRequest(
+        request = GptChatWithVisionCompletionRequest(
             messages=list(map(self._convert_to_chat_message, messages)),
             frequency_penalty=self.frequency_penalty,
             logit_bias=self.logit_bias,
@@ -240,7 +243,7 @@ class PalantirChatOpenAI(BaseChatModel):
         """
         return "palantir-openai-chat"
 
-    def _convert_to_chat_message(self, message: BaseMessage) -> ChatMessage:
+    def _convert_to_chat_message(self, message: BaseMessage) -> MultiContentChatMessage:
         """Convert a LangChain BaseMessage to Palantir ChatMessage format.
 
         Args:
@@ -255,45 +258,68 @@ class PalantirChatOpenAI(BaseChatModel):
             ValueError: If the message type is not supported.
         """
         if isinstance(message, HumanMessage):
-            return ChatMessage(
-                name=message.name,
+            ChatMessage
+            return MultiContentChatMessage(
                 role=ChatMessageRole.USER,
-                content=message.text(),
+                contents=self._convert_to_chat_message_content(message.content),
             )
         elif isinstance(message, AIMessage):
-            return ChatMessage(
-                name=message.name,
+            return MultiContentChatMessage(
                 role=ChatMessageRole.ASSISTANT,
-                content=message.text(),
+                contents=self._convert_to_chat_message_content(message.content),
                 tool_calls=list(
                     map(self._convert_to_gpt_tool_call, message.tool_calls)
                 ),
             )
         elif isinstance(message, SystemMessage):
-            return ChatMessage(
-                name=message.name,
+            return MultiContentChatMessage(
                 role=ChatMessageRole.SYSTEM,
-                content=message.text(),
+                contents=self._convert_to_chat_message_content(message.content),
             )
         elif isinstance(message, ToolMessage):
-            return ChatMessage(
-                name=message.name,
+            return MultiContentChatMessage(
                 role=ChatMessageRole.TOOL,
-                content=message.text(),
+                contents=self._convert_to_chat_message_content(message.content),
                 tool_call_id=message.tool_call_id,
             )
         elif isinstance(message, FunctionMessage):
-            return ChatMessage(
-                name=message.name,
+            return MultiContentChatMessage(
                 role=ChatMessageRole.FUNCTION,
-                content=message.text(),
+                contents=self._convert_to_chat_message_content(message.content),
             )
         else:
-            return ChatMessage(
-                name=message.name,
+            return MultiContentChatMessage(
                 role=ChatMessageRole.UNKNOWN,
-                content=message.text(),
+                contents=self._convert_to_chat_message_content(message.content),
             )
+
+    def _convert_to_chat_message_content(
+        self, contents: str | list[str, dict]
+    ) -> list[ChatMessageContent]:
+        if isinstance(contents, str):
+            return [ChatMessageContent(text=contents)]
+        formatted_content = []
+        for content in contents:
+            if isinstance(content, str):
+                formatted_content.append(ChatMessageContent(text=content))
+            elif isinstance(content, dict):
+                if content["type"] == "text":
+                    formatted_content.append(ChatMessageContent(text=content["text"]))
+                elif content["type"] == "image":
+                    image_url = (
+                        content.get("image_url")
+                        or f"data:{content['mime_type']};{content['source_type']},{content['data']}"
+                    )
+                    formatted_content.append(
+                        ChatMessageContent(
+                            image=Base64ImageContent(image_url=image_url)
+                        )
+                    )
+                else:
+                    raise ValueError(f"Unsupported content type: {content['type']}")
+            else:
+                raise TypeError(f"Unsupported content type: {type(content)}")
+        return formatted_content
 
     def _convert_from_gpt_chat_completion_response(
         self, response: GptChatCompletionResponse
@@ -317,7 +343,7 @@ class PalantirChatOpenAI(BaseChatModel):
                 generations.append(
                     ChatGeneration(
                         message=HumanMessage(
-                            content=choice.message.content or "",
+                            content=choice.message.content,
                         )
                     )
                 )

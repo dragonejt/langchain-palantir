@@ -6,7 +6,7 @@ langchain-palantir is a library that allows users to call Palantir-provided LLMs
 
 Install langchain-palantir like any other Palantir conda package, with the Libraries left sidebar in a Code Repository or Code Workspace. langchain-palantir currently requires Python version 3.12.10 or later.
 
-## Supported Features:
+## Supported Features
 
 ### Chat Models
 

@@ -14,6 +14,7 @@ Install langchain-palantir like any other Palantir conda package, with the Libra
 | ----------------------- | ---------------- | ---------------- | ------------ | ----------- |
 | `PalantirChatOpenAI`    | OpenAI GPT       | ✅               | ✅           | ✅          |
 | `PalantirChatAnthropic` | Anthropic Claude | ✅               | ✅           | ✅          |
+| `PalantirChatGeneric`   | Meta Llama       | ✅               | ❌           | ❌          |
 
 ### Embedding Models
 
@@ -53,6 +54,30 @@ for tool_call in answer.tool_calls:
   messages.append(tools[tool_call["name"]].invoke(tool_call))
 
 final_answer = llm_with_tools.invoke(messages)
+```
+
+### Basic Multimodal Workflow
+
+```python
+model = AnthropicClaudeLanguageModel.get("AnthropicClaude_4_Sonnet")
+image_data = b64encode(pizza_jpg.read()).decode("utf-8")
+messages = [
+  HumanMessage("What is in the following image?"),
+  HumanMessage(
+    [
+      {
+        "type": "image",
+        "source_type": "base64",
+        "data": image_data,
+        "mime_type": "image/jpeg",
+      }
+    ]
+  ),
+]
+
+llm = PalantirChatAnthropic(model=model)
+
+answer = llm.invoke(messages)
 ```
 
 ### Using Palantir Embedding Models

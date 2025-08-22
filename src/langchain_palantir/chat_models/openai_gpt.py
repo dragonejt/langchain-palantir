@@ -2,12 +2,12 @@
 
 This module provides a LangChain-compatible wrapper for Palantir's OpenAI GPT chat
 models, enabling seamless integration with LangChain applications while leveraging
-Palantir's hosted OpenAI GPT capabilities including function calling and tool usage.
+Palantir's hosted OpenAI GPT capabilities including multimodal inputs and tool calling.
 
 Classes:
     PalantirChatOpenAI: LangChain chat model implementation using Palantir's
-        OpenAI GPT models with full support for chat completions, function calling,
-        and tool binding.
+        OpenAI GPT models with full support for chat completions, multimodal inputs,
+        and tool calling.
 """
 
 from json import dumps, loads
@@ -46,7 +46,6 @@ from langchain_core.utils.function_calling import (
 )
 from language_model_service_api.languagemodelservice_api import (
     Base64ImageContent,
-    ChatMessage,
     ChatMessageContent,
     ChatMessageRole,
     MultiContentChatMessage,
@@ -74,11 +73,11 @@ class PalantirChatOpenAI(BaseChatModel):
     """LangChain ChatModel implementation using Palantir's OpenAI GPT models.
 
     This class provides a LangChain-compatible interface to Palantir's hosted OpenAI
-    GPT models, supporting chat completions, function calling, tool usage, and all
+    GPT models, supporting chat completions, multimodal inputs, tool calling, and all
     standard OpenAI parameters like temperature, max_tokens, etc.
 
     Attributes:
-        model (OpenAiGptChatLanguageModel): OpenAiGptChatLanguageModel from
+        model (OpenAiGptChatWithVisionLanguageModel): OpenAiGptChatWithVisionLanguageModel from
             palantir_models to use.
         temperature (Optional[float]): What sampling temperature to use.
         max_retries (int): Maximum number of retries to make when generating.
@@ -252,13 +251,13 @@ class PalantirChatOpenAI(BaseChatModel):
                 FunctionMessage types.
 
         Returns:
-            ChatMessage: Palantir ChatMessage with appropriate role and content.
+            MultiContentChatMessage: Palantir MultiContentChatMessage with
+                appropriate role and content.
 
         Raises:
             ValueError: If the message type is not supported.
         """
         if isinstance(message, HumanMessage):
-            ChatMessage
             return MultiContentChatMessage(
                 role=ChatMessageRole.USER,
                 contents=self._convert_to_chat_message_content(message.content),
@@ -294,8 +293,23 @@ class PalantirChatOpenAI(BaseChatModel):
             )
 
     def _convert_to_chat_message_content(
-        self, contents: str | list[str, dict]
+        self, contents: Union[str, List[Union[str, dict]]]
     ) -> list[ChatMessageContent]:
+        """Convert message content to Palantir ChatMessageContent format.
+
+        Args:
+            contents (Union[str, List[Union[str, dict]]]): Message content to
+                convert. Can be a string, list of strings, or list of
+                dictionaries with text or image content.
+
+        Returns:
+            list[ChatMessageContent]: List of formatted chat message content
+                objects.
+
+        Raises:
+            ValueError: If an unsupported content type is encountered.
+            TypeError: If content has an unsupported Python type.
+        """
         if isinstance(contents, str):
             return [ChatMessageContent(text=contents)]
         formatted_content = []

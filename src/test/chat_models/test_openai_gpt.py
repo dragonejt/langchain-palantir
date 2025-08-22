@@ -138,7 +138,7 @@ class TestOpenAiGpt(TestCase):
 
     def test_openai_vision(self) -> None:
         with open(Path(__file__).parent / "pizza.jpeg", "rb") as pizza_jpg:
-            img_data = b64encode(pizza_jpg.read()).decode("utf-8")
+            image_data = b64encode(pizza_jpg.read()).decode("utf-8")
 
             messages: list[BaseMessage] = [
                 HumanMessage("What is in the following image?"),
@@ -147,7 +147,7 @@ class TestOpenAiGpt(TestCase):
                         {
                             "type": "image",
                             "source_type": "base64",
-                            "data": img_data,
+                            "data": image_data,
                             "mime_type": "image/jpeg",
                         }
                     ]

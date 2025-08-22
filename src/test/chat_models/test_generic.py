@@ -36,7 +36,7 @@ class TestGeneric(TestCase):
     def test_palantir_chat_generic(self) -> None:
         question = "Why is the sky blue?"
         if self.using_live_model is False:
-            self.model.create_vision_completion.return_value = GenericChatCompletionResponse(
+            self.model.create_chat_completion.return_value = GenericChatCompletionResponse(
                 completion="The sky is blue due to Rayleigh scattering of sunlight by the atmosphere.",
                 token_usage=TokenUsage(
                     completion_tokens=10, max_tokens=15, prompt_tokens=5

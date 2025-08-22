@@ -13,7 +13,7 @@ Install langchain-palantir like any other Palantir conda package, with the Libra
 | Chat Model              | Model Family     | Chat Completions | Tool Calling | Image Input |
 | ----------------------- | ---------------- | ---------------- | ------------ | ----------- |
 | `PalantirChatOpenAI`    | OpenAI GPT       | ✅               | ✅           | ✅          |
-| `PalantirChatAnthropic` | Anthropic Claude | ✅               | ✅           | ❌          |
+| `PalantirChatAnthropic` | Anthropic Claude | ✅               | ✅           | ✅          |
 
 ### Embedding Models
 

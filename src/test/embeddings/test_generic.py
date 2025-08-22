@@ -2,12 +2,13 @@ import logging
 from unittest import TestCase
 from unittest.mock import MagicMock
 
-from langchain_palantir import PalantirGenericEmbeddings
 from language_model_service_api.languagemodelservice_api_embeddings_v3 import (
     EmbeddingUsage,
     GenericEmbeddingsResponse,
 )
 from palantir_models.models import GenericEmbeddingModel
+
+from langchain_palantir import PalantirGenericEmbeddings
 
 
 class TestPalantirGenericEmbeddings(TestCase):

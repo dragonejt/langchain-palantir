@@ -1,7 +1,10 @@
 import logging
+from base64 import b64encode
 from datetime import datetime, timezone
+from pathlib import Path
 from unittest import TestCase
 from unittest.mock import MagicMock
+
 from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
 from langchain_core.tools import tool
 from language_model_service_api.languagemodelservice_api import ChatMessageRole
@@ -18,9 +21,8 @@ from palantir_models.models import (
     OpenAiGptChatLanguageModel,
     OpenAiGptChatWithVisionLanguageModel,
 )
-from pathlib import Path
+
 from langchain_palantir import PalantirChatOpenAI
-from base64 import b64encode
 
 
 class TestOpenAiGpt(TestCase):

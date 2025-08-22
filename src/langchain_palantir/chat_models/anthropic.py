@@ -2,12 +2,12 @@
 
 This module provides a LangChain-compatible wrapper for Palantir's Anthropic Claude
 chat models, enabling seamless integration with LangChain applications while leveraging
-Palantir's hosted Anthropic Claude capabilities including function calling, tool usage,
+Palantir's hosted Anthropic Claude capabilities including multimodal input, tool calling,
 and thinking capabilities.
 
 Classes:
     PalantirChatAnthropic: LangChain chat model implementation using Palantir's
-        Anthropic Claude models with full support for chat completions, function calling,
+        Anthropic Claude models with full support for chat completions, multimodal input,
         tool binding, and advanced features like thinking mode.
 """
 
@@ -22,7 +22,6 @@ from typing import (
     Union,
     override,
 )
-from langchain_core.messages.ai import UsageMetadata
 
 from langchain_core.callbacks.manager import CallbackManagerForLLMRun
 from langchain_core.language_models import BaseChatModel, LanguageModelInput
@@ -35,6 +34,7 @@ from langchain_core.messages import (
     ToolCall,
     ToolMessage,
 )
+from langchain_core.messages.ai import UsageMetadata
 from langchain_core.outputs import (
     ChatGeneration,
     ChatResult,
@@ -53,6 +53,7 @@ from language_model_service_api.languagemodelservice_api_completion_v3 import (
     ClaudeChatCompletionContent,
     ClaudeChatCompletionRequest,
     ClaudeChatCompletionResponse,
+    ClaudeChatImageContent,
     ClaudeChatMessage,
     ClaudeChatMessageContent,
     ClaudeChatMessageRole,
@@ -62,6 +63,9 @@ from language_model_service_api.languagemodelservice_api_completion_v3 import (
     ClaudeCustomTool,
     ClaudeDisabledThinking,
     ClaudeEnabledThinking,
+    ClaudeImageBase64Source,
+    ClaudeImageSource,
+    ClaudeImageUrlSource,
     ClaudeThinking,
     ClaudeTool,
     ClaudeToolChoice,
@@ -76,7 +80,7 @@ class PalantirChatAnthropic(BaseChatModel):
     """LangChain ChatModel implementation using Palantir's Anthropic Claude models.
 
     This class provides a LangChain-compatible interface to Palantir's hosted Anthropic
-    Claude models, supporting chat completions, function calling, tool usage, thinking
+    Claude models, supporting chat completions, multimodal input, tool usage, thinking
     mode, and all standard Claude parameters like temperature, max_tokens, etc.
 
     Attributes:
@@ -159,7 +163,7 @@ class PalantirChatAnthropic(BaseChatModel):
         tools: Sequence[Union[dict[str, Any], type, Callable, BaseTool]],
         *,
         tool_choice: Optional[
-            Union[dict, str, Literal["auto", "none", "required", "any"], bool]
+            Union[dict, str, Literal["auto", "none", "any"], bool]
         ] = None,
         strict: Optional[bool] = None,
         parallel_tool_calls: Optional[bool] = None,
@@ -176,7 +180,7 @@ class PalantirChatAnthropic(BaseChatModel):
                 Tools to bind to the model. Can be dictionaries with OpenAI
                 function schemas, Python types, callable functions, or LangChain
                 BaseTool instances.
-            tool_choice (Optional[Union[dict, str, Literal["auto", "none", "required", "any"], bool]]):
+            tool_choice (Optional[Union[dict, str, Literal["auto", "none", "any"], bool]]):
                 Controls tool usage behavior. "auto" lets model decide, "none"
                 disables tools, "any" forces any tool use, or specify a
                 particular tool name.
@@ -253,40 +257,29 @@ class PalantirChatAnthropic(BaseChatModel):
 
         Returns:
             ClaudeChatMessage: Claude ChatMessage with appropriate role and content.
-
-        Raises:
-            ValueError: If the message type is not supported.
         """
-        content = (
-            [message.content] if isinstance(message.content, str) else message.content
-        )
 
         if isinstance(message, (HumanMessage, SystemMessage, FunctionMessage)):
             return ClaudeChatMessage(
                 role=ClaudeChatMessageRole.USER,
-                content=[
-                    ClaudeChatMessageContent(text=ClaudeChatTextContent(text=text))
-                    for text in content
-                ],
+                content=self._convert_to_claude_chat_message_content(message.content),
             )
         elif isinstance(message, AIMessage):
-            return ClaudeChatMessage(
-                role=ClaudeChatMessageRole.ASSISTANT,
-                content=[
+            if len(message.tool_calls) > 0:
+                content = [
                     ClaudeChatMessageContent(
-                        text=ClaudeChatTextContent(text=text)
-                        if len(message.tool_calls) == 0
-                        else None,
                         tool_use=ClaudeChatToolUseContent(
                             id=message.tool_calls[0]["id"],
                             name=message.tool_calls[0]["name"],
                             input=message.tool_calls[0]["args"],
                         )
-                        if len(message.tool_calls) > 0
-                        else None,
                     )
-                    for text in content
-                ],
+                ]
+            else:
+                content = self._convert_to_claude_chat_message_content(message.content)
+            return ClaudeChatMessage(
+                role=ClaudeChatMessageRole.ASSISTANT,
+                content=content,
             )
         elif isinstance(message, ToolMessage):
             return ClaudeChatMessage(
@@ -294,22 +287,82 @@ class PalantirChatAnthropic(BaseChatModel):
                 content=[
                     ClaudeChatMessageContent(
                         tool_result=ClaudeChatToolResultContent(
-                            content=text,
+                            content=message.text(),
                             tool_use_id=message.tool_call_id,
                             is_error=message.status == "error",
                         )
                     )
-                    for text in content
                 ],
             )
         else:
             return ClaudeChatMessage(
                 role=ClaudeChatMessageRole.UNKNOWN,
-                content=[
-                    ClaudeChatMessageContent(text=ClaudeChatTextContent(text=text))
-                    for text in content
-                ],
+                content=self._convert_to_claude_chat_message_content(message.content),
             )
+
+    def _convert_to_claude_chat_message_content(
+        self, contents: Union[str, List[Union[str, dict]]]
+    ) -> list[ClaudeChatMessageContent]:
+        """Convert message content to Palantir ClaudeChatMessageContent format.
+
+        Args:
+            contents (Union[str, List[Union[str, dict]]]): Message content to
+                convert. Can be a string, list of strings, or list of
+                dictionaries with text or image content.
+
+        Returns:
+            list[ClaudeChatMessageContent]: List of formatted chat message content
+                objects.
+
+        Raises:
+            ValueError: If an unsupported content type is encountered.
+            TypeError: If content has an unsupported Python type.
+        """
+
+        if isinstance(contents, str):
+            return [ClaudeChatMessageContent(text=ClaudeChatTextContent(text=contents))]
+        formatted_content = []
+        for content in contents:
+            if isinstance(content, str):
+                formatted_content.append(
+                    ClaudeChatMessageContent(text=ClaudeChatTextContent(text=content))
+                )
+            elif isinstance(content, dict):
+                if content["type"] == "text":
+                    formatted_content.append(
+                        ClaudeChatMessageContent(
+                            text=ClaudeChatTextContent(text=content["text"])
+                        )
+                    )
+                elif content["type"] == "image":
+                    if content["source_type"] == "url":
+                        source = ClaudeImageSource(
+                            url=ClaudeImageUrlSource(url=content["image_url"])
+                        )
+                    elif content["source_type"] == "base64":
+                        source = ClaudeImageSource(
+                            base64=ClaudeImageBase64Source(
+                                data=content["data"],
+                                media_type=content["mime_type"]
+                                .upper()
+                                .replace("/", "_"),
+                            )
+                        )
+                    else:
+                        raise ValueError(
+                            f"Unsupported image source: {content['source_type']}"
+                        )
+
+                    formatted_content.append(
+                        ClaudeChatMessageContent(
+                            image=ClaudeChatImageContent(source=source)
+                        )
+                    )
+                else:
+                    raise ValueError(f"Unsupported content type: {content['type']}")
+            else:
+                raise TypeError(f"Unsupported content type: {type(content)}")
+        return formatted_content
 
     def _convert_from_claude_chat_completion_response(
         self, response: ClaudeChatCompletionResponse
@@ -350,18 +403,16 @@ class PalantirChatAnthropic(BaseChatModel):
 
     def _convert_to_claude_tool_choice(
         self,
-        tool_choice: Optional[
-            Union[dict, str, Literal["auto", "none", "required", "any"], bool]
-        ],
-        parallel_tool_calls: bool,
+        tool_choice: Optional[Union[dict, str, Literal["auto", "none", "any"], bool]],
+        parallel_tool_calls: Optional[bool],
     ) -> Optional[ClaudeToolChoice]:
         """Convert tool choice parameter to Claude ToolChoice format.
 
         Args:
-            tool_choice (Optional[Union[dict, str, Literal["auto", "none", "required", "any"], bool]]):
+            tool_choice (Optional[Union[dict, str, Literal["auto", "none", "any"], bool]]):
                 Tool choice specification. Can be "auto", "none", "any",
                 or a specific tool name.
-            parallel_tool_calls (bool): Whether to allow parallel tool calls.
+            parallel_tool_calls (Optional[bool]): Whether to allow parallel tool calls.
                 When False, disables parallel tool use in Claude.
 
         Returns:

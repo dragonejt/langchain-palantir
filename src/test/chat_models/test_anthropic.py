@@ -1,7 +1,10 @@
 import logging
+from base64 import b64encode
 from datetime import datetime, timezone
+from pathlib import Path
 from unittest import TestCase
 from unittest.mock import MagicMock
+
 from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
 from langchain_core.tools import tool
 from language_model_service_api.languagemodelservice_api_completion_v3 import (
@@ -15,6 +18,7 @@ from language_model_service_api.languagemodelservice_api_completion_v3 import (
 from palantir_models.models import (
     AnthropicClaudeLanguageModel,
 )
+
 from langchain_palantir import PalantirChatAnthropic
 
 
@@ -111,3 +115,43 @@ class TestAnthropic(TestCase):
             date = datetime.now(timezone.utc)
             self.assertIn(str(date.year), final_answer.content)
             self.assertIn(str(date.day), final_answer.content)
+
+    def test_anthropic_vision(self) -> None:
+        with open(Path(__file__).parent / "pizza.jpeg", "rb") as pizza_jpg:
+            image_data = b64encode(pizza_jpg.read()).decode("utf-8")
+
+            messages: list[BaseMessage] = [
+                HumanMessage("What is in the following image?"),
+                HumanMessage(
+                    [
+                        {
+                            "type": "image",
+                            "source_type": "base64",
+                            "data": image_data,
+                            "mime_type": "image/jpeg",
+                        }
+                    ]
+                ),
+            ]
+
+            if self.using_live_model is False:
+                self.model.create_chat_completion.return_value = ClaudeChatCompletionResponse(
+                    content=[
+                        ClaudeChatCompletionContent(
+                            text=ClaudeChatCompletionTextContent(
+                                text="The image shows a freshly baked pizza topped with slices of pepperoni, black olives, melted cheese, and garnished with fresh basil leaves in the center."
+                            )
+                        )
+                    ],
+                    id="",
+                    model="AnthropicClaude_4_Sonnet",
+                    role=ClaudeChatMessageRole.ASSISTANT,
+                    usage=ClaudeTokenUsage(
+                        input_tokens=5, output_tokens=10, max_tokens=15
+                    ),
+                )
+
+            answer = self.llm.invoke(messages)
+
+            self.model.create_chat_completion.assert_called_once()
+            self.assertIn("pizza", answer.content.lower())

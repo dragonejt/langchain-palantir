@@ -9,7 +9,7 @@ Classes:
         generic embedding models.
 """
 
-from typing import override
+from typing_extensions import override
 
 from langchain_core.embeddings import Embeddings
 from language_model_service_api.languagemodelservice_api_embeddings_v3 import (

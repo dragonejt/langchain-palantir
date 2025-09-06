@@ -15,8 +15,8 @@ from typing import (
     Dict,
     List,
     Optional,
-    override,
 )
+from typing_extensions import override
 
 from langchain_core.callbacks import CallbackManagerForLLMRun
 from langchain_core.language_models import BaseChatModel

@@ -20,8 +20,8 @@ from typing import (
     Optional,
     Sequence,
     Union,
-    override,
 )
+from typing_extensions import override
 
 from langchain_core.callbacks.manager import CallbackManagerForLLMRun
 from langchain_core.language_models import BaseChatModel, LanguageModelInput

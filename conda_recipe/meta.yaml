@@ -9,9 +9,9 @@ requirements:
   - setuptools
   run:
   - langchain-core
-  - python>=3.11.10
   - palantir_models
   - language-model-service-api
+  - python
 test:
   requires:
   - pytest

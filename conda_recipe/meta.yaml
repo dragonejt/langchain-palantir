@@ -11,7 +11,7 @@ requirements:
   - langchain-core
   - palantir_models
   - language-model-service-api
-  - python
+  - python>=3.11.10
 test:
   requires:
   - pytest

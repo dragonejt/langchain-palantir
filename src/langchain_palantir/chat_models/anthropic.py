@@ -335,14 +335,14 @@ class PalantirChatAnthropic(BaseChatModel):
                         )
                     )
                 elif content["type"] == "image":
-                    if content["source_type"] == "url":
+                    if "url" in content:
                         source = ClaudeImageSource(
-                            url=ClaudeImageUrlSource(url=content["image_url"])
+                            url=ClaudeImageUrlSource(url=content["url"])
                         )
-                    elif content["source_type"] == "base64":
+                    elif "base64" in content:
                         source = ClaudeImageSource(
                             base64=ClaudeImageBase64Source(
-                                data=content["data"],
+                                data=content["base64"],
                                 media_type=content["mime_type"]
                                 .upper()
                                 .replace("/", "_"),
@@ -350,7 +350,7 @@ class PalantirChatAnthropic(BaseChatModel):
                         )
                     else:
                         raise ValueError(
-                            f"Unsupported image source: {content['source_type']}"
+                            f"No image source type found between `base64` and `url`: {content.keys()}"
                         )
 
                     formatted_content.append(

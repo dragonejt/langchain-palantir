@@ -320,9 +320,10 @@ class PalantirChatOpenAI(BaseChatModel):
                 if content["type"] == "text":
                     formatted_content.append(ChatMessageContent(text=content["text"]))
                 elif content["type"] == "image":
+                    print(content.keys())
                     image_url = (
-                        content.get("image_url")
-                        or f"data:{content['mime_type']};{content['source_type']},{content['data']}"
+                        content.get("url")
+                        or f"data:{content['mime_type']};base64,{content['base64']}"
                     )
                     formatted_content.append(
                         ChatMessageContent(

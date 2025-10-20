@@ -14,7 +14,7 @@ Install langchain-palantir like any other Palantir conda package, with the Libra
 | ----------------------- | ---------------- | ---------------- | ------------ | ----------- |
 | `PalantirChatOpenAI`    | OpenAI GPT       | ✅               | ✅           | ✅          |
 | `PalantirChatAnthropic` | Anthropic Claude | ✅               | ✅           | ✅          |
-| `PalantirChatGeneric`   | Meta Llama       | ✅               | ❌           | ❌          |
+| `PalantirChatGeneric`   | Meta Llama, etc.  | ✅               | ❌           | ❌          |
 
 ### Embedding Models
 
@@ -24,9 +24,9 @@ Install langchain-palantir like any other Palantir conda package, with the Libra
 
 ## Usage
 
-langchain-palantir can be used like any other LangChain extension.
+langchain-palantir can be used like any other LangChain extension. Examples use LangChain v1.0.
 
-### Basic Tool Calling Workflow
+### Basic Agentic Workflow
 
 ```python
 model = OpenAiGptChatLanguageModel.get("GPT_4_1")
@@ -43,17 +43,8 @@ def date_time() -> datetime:
 
   return datetime.now(timezone.utc)
 
-tools = {"date_time": date_time}
-
-llm = PalantirChatOpenAI(model=model)
-llm_with_tools = llm.bind_tools(tools.values())
-answer = llm_with_tools.invoke(messages)
-messages.append(answer)
-
-for tool_call in answer.tool_calls:
-  messages.append(tools[tool_call["name"]].invoke(tool_call))
-
-final_answer = llm_with_tools.invoke(messages)
+agent = create_agent(model=self.llm, tools=[date_time])
+answer = agent.invoke({"messages": messages})
 ```
 
 ### Basic Multimodal Workflow

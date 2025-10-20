@@ -148,22 +148,22 @@ class PalantirChatGeneric(BaseChatModel):
         if isinstance(message, HumanMessage):
             return DialogChatMessage(
                 role=DialogRole.USER,
-                content=message.text(),
+                content=message.text,
             )
         elif isinstance(message, AIMessage):
             return DialogChatMessage(
                 role=DialogRole.ASSISTANT,
-                content=message.text(),
+                content=message.text,
             )
         elif isinstance(message, SystemMessage):
             return DialogChatMessage(
                 role=DialogRole.SYSTEM,
-                content=message.text(),
+                content=message.text,
             )
         else:
             return DialogChatMessage(
                 role=DialogRole.UNKNOWN,
-                content=message.text(),
+                content=message.text,
             )
 
     def _convert_from_generic_chat_completion_response(

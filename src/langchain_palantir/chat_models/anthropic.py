@@ -287,7 +287,7 @@ class PalantirChatAnthropic(BaseChatModel):
                 content=[
                     ClaudeChatMessageContent(
                         tool_result=ClaudeChatToolResultContent(
-                            content=message.text(),
+                            content=message.text,
                             tool_use_id=message.tool_call_id,
                             is_error=message.status == "error",
                         )

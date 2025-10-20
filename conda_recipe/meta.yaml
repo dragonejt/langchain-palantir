@@ -1,21 +1,22 @@
 package:
   name: langchain-palantir
-  version: 0.0.8
+  version: 0.0.9
 source:
   path: ../src
 requirements:
   build:
-    - python>=3.11.10
-    - setuptools
+  - python>=3.11.10
+  - setuptools
   run:
-    - python>=3.11.10
-    - langchain-core>=1.0.0
-    - palantir_models
-    - language-model-service-api
+  - python>=3.11.10
+  - langchain-core>=1.0.0
+  - language-model-service-api
+  - palantir_models
 test:
   requires:
-    - pytest
-    - ruff
+  - pytest
+  - ruff
+  - langchain>=1.0.0
 build:
   script: python setup.py install --single-version-externally-managed --record=record.txt
   noarch: python

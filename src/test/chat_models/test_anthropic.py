@@ -5,8 +5,9 @@ from pathlib import Path
 from unittest import TestCase
 from unittest.mock import MagicMock
 
-from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
-from langchain_core.tools import tool
+from langchain.messages import AIMessage, HumanMessage
+from langchain.tools import tool
+from langchain.agents import create_agent
 from language_model_service_api.languagemodelservice_api_completion_v3 import (
     ClaudeChatCompletionContent,
     ClaudeChatCompletionResponse,
@@ -64,9 +65,7 @@ class TestAnthropic(TestCase):
         self.assertIn("rayleigh scattering", answer.content.lower())
 
     def test_anthropic_tool_calling(self) -> None:
-        messages: list[BaseMessage] = [
-            HumanMessage("Using the date_time tool, what is today's date?")
-        ]
+        messages = [HumanMessage("Using the date_time tool, what is today's date?")]
 
         @tool
         def date_time() -> str:
@@ -116,11 +115,34 @@ class TestAnthropic(TestCase):
             self.assertIn(str(date.year), final_answer.content)
             self.assertIn(str(date.day), final_answer.content)
 
+    def test_anthropic_agent(self) -> None:
+        if self.using_live_model is False:
+            return
+
+        messages = [HumanMessage("Using the date_time tool, what is today's date?")]
+
+        @tool
+        def date_time() -> str:
+            """
+            Returns the current datetime in ISO format.
+            Parameters: None
+            """
+
+            return datetime.now(timezone.utc).isoformat()
+
+        agent = create_agent(model=self.llm, tools=[date_time])
+
+        answer = agent.invoke({"messages": messages})
+
+        date = datetime.now(timezone.utc)
+        self.assertIn(str(date.year), answer["messages"][-1].content)
+        self.assertIn(str(date.day), answer["messages"][-1].content)
+
     def test_anthropic_vision(self) -> None:
         with open(Path(__file__).parent / "pizza.jpeg", "rb") as pizza_jpg:
             image_data = b64encode(pizza_jpg.read()).decode("utf-8")
 
-            messages: list[BaseMessage] = [
+            messages = [
                 HumanMessage("What is in the following image?"),
                 HumanMessage(
                     [

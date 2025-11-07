@@ -30,6 +30,8 @@ langchain-palantir can be used like any other LangChain extension. Examples use 
 
 ```python
 model = OpenAiGptChatLanguageModel.get("GPT_4_1")
+llm = PalantirChatAnthropic(model=model)
+
 messages = [
   HumanMessage("Using the date_time tool, what is today's date?")
 ]
@@ -43,7 +45,7 @@ def date_time() -> datetime:
 
   return datetime.now(timezone.utc)
 
-agent = create_agent(model=self.llm, tools=[date_time])
+agent = create_agent(model=llm, tools=[date_time])
 answer = agent.invoke({"messages": messages})
 ```
 
@@ -51,6 +53,8 @@ answer = agent.invoke({"messages": messages})
 
 ```python
 model = AnthropicClaudeLanguageModel.get("AnthropicClaude_4_Sonnet")
+llm = PalantirChatAnthropic(model=model)
+
 image_data = b64encode(pizza_jpg.read()).decode("utf-8")
 messages = [
   HumanMessage("What is in the following image?"),
@@ -65,8 +69,6 @@ messages = [
     ]
   ),
 ]
-
-llm = PalantirChatAnthropic(model=model)
 
 answer = llm.invoke(messages)
 ```

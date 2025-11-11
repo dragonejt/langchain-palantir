@@ -14,9 +14,9 @@ requirements:
   - palantir_models
 test:
   requires:
-  - pytest
   - ruff
   - langchain>=1.0.0
+  - pytest>=9.0.0
 build:
   script: python setup.py install --single-version-externally-managed --record=record.txt
   noarch: python

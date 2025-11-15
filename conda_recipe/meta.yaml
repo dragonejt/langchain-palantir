@@ -1,24 +1,24 @@
 package:
   name: langchain-palantir
-  version: 0.0.9
+  version: 0.1.0
 source:
   path: ../src
 requirements:
   build:
-  - python>=3.11.10
-  - setuptools
+    - python>=3.11.10
+    - setuptools
   run:
-  - python>=3.11.10
-  - langchain-core>=1.0.0
-  - language-model-service-api
-  - palantir_models
-  - foundry-sdk-runtime
+    - python>=3.11.10
+    - langchain-core>=1.0.0
+    - language-model-service-api
+    - palantir_models
+    - foundry-sdk-runtime
 test:
   requires:
-  - ruff
-  - langchain>=1.0.0
-  - pytest
-  - pytest-transforms
+    - ruff
+    - langchain>=1.0.0
+    - pytest
+    - pytest-transforms
 build:
   script: python setup.py install --single-version-externally-managed --record=record.txt
   noarch: python

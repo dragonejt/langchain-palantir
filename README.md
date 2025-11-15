@@ -14,13 +14,25 @@ Install langchain-palantir like any other Palantir conda package, with the Libra
 | ----------------------- | ---------------- | ---------------- | ------------ | ----------- |
 | `PalantirChatOpenAI`    | OpenAI GPT       | ✅               | ✅           | ✅          |
 | `PalantirChatAnthropic` | Anthropic Claude | ✅               | ✅           | ✅          |
-| `PalantirChatGeneric`   | Meta Llama, etc.  | ✅               | ❌           | ❌          |
+| `PalantirChatGeneric`   | Meta Llama, etc. | ✅               | ❌           | ❌          |
 
 ### Embedding Models
 
 | Embedding Model             | Embed Query | Embed Documents |
 | --------------------------- | ----------- | --------------- |
 | `PalantirGenericEmbeddings` | ✅          | ✅              |
+
+### Vector Stores
+
+| Vector Store       | Add/Remove Vectors | Similarity Search |
+| ------------------ | ------------------ | ----------------- |
+| `PalantirOntology` | ✅                 | ✅                |
+
+### Document Loaders
+
+| Vector Store              | Images (PNG/JPG) | PDFs |
+| ------------------------- | ---------------- | ---- |
+| `PalantirVisionLLMLoader` | ✅               | ❌   |
 
 ## Usage
 
@@ -81,4 +93,31 @@ texts = ["Hello World", "Hello AI"]
 embedding = PalantirGenericEmbeddings(model=model)
 
 embeddings = embedding.embed_documents(texts)
+```
+
+### Notes on Palantir Ontology Vector Store
+
+Using the Palantir Ontology as vector store requires creating an Ontology object with a very specific configuration. The object must have the following four properties:
+
+- `id` of type STRING, the primary key.
+- `text` of type STRING, the text content of the document.
+- `vector` of type VECTOR (ARRAY[FLOAT]), the vector representation of the document.
+- `metadata` of type STRING, metadata about the document in JSON format.
+
+All four properties must be backed by actual dataset columns, not user edits. Additionally, there must also exist the `create` and `delete` object actions, to create and delete instances of these objects. These will be passed into `OntologyActions` for the vector store to use.
+
+Finally, an Ontology SDK must be generated, with Python OSDK v2. `with AllowBetaFeatures()` must also be enabled for vector similarity search to work.
+
+### Using Palantir Document Loader
+
+```python
+model = VisionLLMDocumentPageExtractor.get("GPT_4_1")
+document = Path("a_tale_of_two_cities.jpg")
+
+loader = PalantirVisionLLMLoader(
+  model=model,
+  documents=[document],
+)
+
+documents = loader.load()
 ```

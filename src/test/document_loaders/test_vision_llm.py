@@ -12,6 +12,7 @@ from langchain_palantir.document_loaders.vision_llm import PalantirVisionLLMLoad
 
 class TestPalantirVisionLLMLoader(TestCase):
     model: VisionLLMDocumentPageExtractor
+    image_path: Path
     using_live_model: bool
 
     def setUp(self) -> None:
@@ -24,12 +25,16 @@ class TestPalantirVisionLLMLoader(TestCase):
             self.model = MagicMock(spec=VisionLLMDocumentPageExtractor)
             self.using_live_model = False
 
+        self.path = (
+            Path(__file__).parent.parent / "resources" / "a_tale_of_two_cities.jpg"
+        )
+
+        self.model.create_extraction.return_value = "best of times"
+
     def test_document_loader(self) -> None:
         loader = PalantirVisionLLMLoader(
             model=self.model,
-            documents=[
-                Path(__file__).parent.parent / "resources" / "a_tale_of_two_cities.jpg"
-            ],
+            documents=[self.path],
         )
 
         documents = loader.load()
@@ -39,9 +44,7 @@ class TestPalantirVisionLLMLoader(TestCase):
     def test_document_lazy_loader(self) -> None:
         loader = PalantirVisionLLMLoader(
             model=self.model,
-            documents=[
-                Path(__file__).parent.parent / "resources" / "a_tale_of_two_cities.jpg"
-            ],
+            documents=[self.path],
         )
 
         documents = loader.lazy_load()

@@ -12,11 +12,14 @@ requirements:
   - langchain-core>=1.0.0
   - language-model-service-api
   - palantir_models
+  - foundry-sdk-runtime
+  - ontology_sdk
 test:
   requires:
   - ruff
   - langchain>=1.0.0
-  - pytest>=9.0.0
+  - pytest
+  - pytest-transforms
 build:
   script: python setup.py install --single-version-externally-managed --record=record.txt
   noarch: python

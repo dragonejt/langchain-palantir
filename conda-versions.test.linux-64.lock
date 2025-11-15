@@ -57,7 +57,7 @@ foundry-logging-lib-python=0.165.0=py_0 @ noarch
 foundry-ml-api=3.982.0=py_0 @ noarch
 foundry-ml-live-internal-api=1.1121.0=py_0 @ noarch
 foundry-platform-sdk=1.64.0=pyhd8ed1ab_0 @ noarch
-foundry-sdk-runtime=2.144.0=py_0 @ noarch
+foundry-sdk-runtime=2.146.0=py_0 @ noarch
 foundry-telemetry-service-api=0.1507.0=py_0 @ noarch
 foundry-transforms-lib-python=0.985.0=py_0 @ noarch
 foundry_ml_live_inference=1.1121.0=py_0 @ noarch
@@ -153,7 +153,6 @@ multidict=6.6.3=py312h178313f_0 @ linux-64
 ncurses=6.5=h2d0b736_3 @ linux-64
 nlohmann_json=3.12.0=h54a6638_1 @ linux-64
 numpy=1.26.4=py312heda63a1_0 @ linux-64
-ontology_sdk=0.7.0=py_0 @ noarch
 openssl=3.6.0=h26f9b46_0 @ linux-64
 orc=2.2.1=hd747db4_0 @ linux-64
 orjson=3.11.4=py312h868fb18_0 @ linux-64
@@ -240,4 +239,4 @@ zstandard=0.23.0=py312h4c3975b_3 @ linux-64
 zstd=1.5.7=hb8e6e7a_2 @ linux-64
 
 [Conda lock version]
-v2 - 7669ed54e210eb2adce35eb4f0527fa2e72ad39f73d5e6daf4ee75f4fea3aef6
+v2 - a62312bab4c7e02d522935e04826b9399c28399ba2310ca3b57ee87d7675efa1

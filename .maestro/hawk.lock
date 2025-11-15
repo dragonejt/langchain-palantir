@@ -153,7 +153,6 @@ multidict=6.6.3=py312h178313f_0 @ 426e1572
 ncurses=6.5=h2d0b736_3 @ 426e1572
 nlohmann_json=3.12.0=h54a6638_1 @ 426e1572
 numpy=1.26.4=py312heda63a1_0 @ 426e1572
-ontology_sdk=0.7.0=py_0 @ c958177d
 openssl=3.6.0=h26f9b46_0 @ ad241afe
 orc=2.2.1=hd747db4_0 @ 426e1572
 orjson=3.11.4=py312h868fb18_0 @ ad241afe
@@ -248,7 +247,6 @@ ad241afe - linux-64 @ conda @ ri.artifacts.repository.artifactory.external-conda
 aeac16fb - noarch @ tar.bz2 @ ri.artifacts.repository.python-library.models
 b58216b5 - linux-64 @ tar.bz2 @ ri.transforms-addons-bundle..artifacts.bundle
 c37a1747 - linux-64 @ tar.bz2 @ ri.artifacts.repository.python-library.models
-c958177d - noarch @ conda @ ri.stemma.main.repository.08f39c70-15a5-4b89-a021-8a3a1fc72509
 
 [pip-indices]
 ri.python-osdk-asset-bundle.main.artifacts.repository
@@ -260,4 +258,4 @@ ri.stemma.main.repository.08f39c70-15a5-4b89-a021-8a3a1fc72509
 ri.stemma.main.repository.a9550cf0-488f-419f-b935-9004e067b93f
 
 [conda lock version]
-v3 - f0b86187b5db742555bdcac256e043ae46e1068e2f2f5b9073bc4e4767db41df
+v3 - d931e9eb6598773d0f11353eb066753046e1068e2f2f5b9073bc4e4767db41df

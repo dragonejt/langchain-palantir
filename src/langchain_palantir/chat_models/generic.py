@@ -16,7 +16,6 @@ from typing import (
     List,
     Optional,
 )
-from typing_extensions import override
 
 from langchain_core.callbacks import CallbackManagerForLLMRun
 from langchain_core.language_models import BaseChatModel
@@ -36,6 +35,7 @@ from language_model_service_api.languagemodelservice_api_completion_v3 import (
 )
 from palantir_models.models import GenericChatCompletionLanguageModel
 from pydantic import Field
+from typing_extensions import override
 
 
 class PalantirChatGeneric(BaseChatModel):

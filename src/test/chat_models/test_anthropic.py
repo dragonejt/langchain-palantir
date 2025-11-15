@@ -5,9 +5,9 @@ from pathlib import Path
 from unittest import TestCase
 from unittest.mock import MagicMock
 
+from langchain.agents import create_agent
 from langchain.messages import AIMessage, HumanMessage
 from langchain.tools import tool
-from langchain.agents import create_agent
 from language_model_service_api.languagemodelservice_api_completion_v3 import (
     ClaudeChatCompletionContent,
     ClaudeChatCompletionResponse,
@@ -139,7 +139,9 @@ class TestAnthropic(TestCase):
         self.assertIn(str(date.day), answer["messages"][-1].content)
 
     def test_anthropic_vision(self) -> None:
-        with open(Path(__file__).parent / "pizza.jpeg", "rb") as pizza_jpg:
+        with open(
+            Path(__file__).parent.parent / "resources" / "pizza.jpeg", "rb"
+        ) as pizza_jpg:
             image_data = b64encode(pizza_jpg.read()).decode("utf-8")
 
             messages = [

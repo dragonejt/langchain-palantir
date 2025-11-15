@@ -5,8 +5,9 @@
 from langchain_palantir.chat_models.anthropic import PalantirChatAnthropic
 from langchain_palantir.chat_models.generic import PalantirChatGeneric
 from langchain_palantir.chat_models.openai_gpt import PalantirChatOpenAI
+from langchain_palantir.document_loaders.vision_llm import PalantirVisionLLMLoader
 from langchain_palantir.embeddings.generic import PalantirGenericEmbeddings
-from langchain_palantir.vector_stores.ontology import PalantirOntology, OntologyActions
+from langchain_palantir.vector_stores.ontology import OntologyActions, PalantirOntology
 
 __all__ = [
     PalantirChatAnthropic,
@@ -15,4 +16,5 @@ __all__ = [
     PalantirGenericEmbeddings,
     PalantirOntology,
     OntologyActions,
+    PalantirVisionLLMLoader,
 ]

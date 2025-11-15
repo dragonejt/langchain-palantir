@@ -13,7 +13,6 @@ requirements:
   - language-model-service-api
   - palantir_models
   - foundry-sdk-runtime
-  - ontology_sdk
 test:
   requires:
   - ruff

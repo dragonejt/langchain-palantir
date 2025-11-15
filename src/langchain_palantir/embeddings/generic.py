@@ -9,8 +9,6 @@ Classes:
         generic embedding models.
 """
 
-from typing_extensions import override
-
 from langchain_core.embeddings import Embeddings
 from language_model_service_api.languagemodelservice_api_embeddings_v3 import (
     EmbeddingInputType,
@@ -18,6 +16,7 @@ from language_model_service_api.languagemodelservice_api_embeddings_v3 import (
     QueryEmbeddingContent,
 )
 from palantir_models.models import GenericEmbeddingModel
+from typing_extensions import override
 
 
 class PalantirGenericEmbeddings(Embeddings):

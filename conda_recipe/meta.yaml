@@ -5,20 +5,20 @@ source:
   path: ../src
 requirements:
   build:
-    - python>=3.11.10
-    - setuptools
+  - python>=3.11.10
+  - setuptools
   run:
-    - python>=3.11.10
-    - langchain-core>=1.0.0
-    - language-model-service-api
-    - palantir_models
-    - foundry-sdk-runtime
+  - langchain-core>=1.0.0
+  - language-model-service-api
+  - palantir_models
+  - foundry-sdk-runtime
+  - python>=3.11.10
 test:
   requires:
-    - ruff
-    - langchain>=1.0.0
-    - pytest
-    - pytest-transforms
+  - ruff
+  - langchain>=1.0.0
+  - pytest
+  - pytest-transforms
 build:
   script: python setup.py install --single-version-externally-managed --record=record.txt
   noarch: python

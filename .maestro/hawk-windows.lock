@@ -3,13 +3,8 @@
 
 [conda]
 _python_abi3_support=1.0=hd8ed1ab_2 @ 2cda1526
-aiohappyeyeballs=2.6.1=pyhd8ed1ab_0 @ 2cda1526
-aiohttp=3.13.2=py311h582051c_0 @ 29f41490
-aiosignal=1.4.0=pyhd8ed1ab_0 @ 2cda1526
 annotated-types=0.7.0=pyhd8ed1ab_1 @ 931c1ab2
 anyio=4.11.0=pyhcf101f3_0 @ 931c1ab2
-async-timeout=4.0.3=pyhd8ed1ab_0 @ 931c1ab2
-attrs=25.4.0=pyh71513ae_0 @ 2cda1526
 aws-c-auth=0.9.1=h179d6b4_5 @ 29f41490
 aws-c-cal=0.9.8=ha82e055_0 @ 29f41490
 aws-c-common=0.12.5=hfd05255_1 @ 8c491a1c
@@ -42,8 +37,6 @@ foundry-data-sidecar-api=0.966.0=py_0 @ 586315a4
 foundry-ml-live-internal-api=1.1121.0=py_0 @ aeac16fb
 foundry-platform-sdk=1.64.0=pyhd8ed1ab_0 @ 931c1ab2
 foundry-sdk-runtime=2.146.0=py_0 @ 627619cc
-frozenlist=1.7.0=py311hdf60d3a_0 @ 29f41490
-greenlet=3.2.4=py311h3e6a449_1 @ 8c491a1c
 h11=0.16.0=pyhd8ed1ab_0 @ 931c1ab2
 h2=4.3.0=pyhcf101f3_0 @ 2cda1526
 hpack=4.1.0=pyhd8ed1ab_0 @ 2cda1526
@@ -58,13 +51,7 @@ json_stream=2.4.1=pyhd8ed1ab_0 @ 931c1ab2
 jsonpatch=1.33=pyhd8ed1ab_1 @ 931c1ab2
 jsonpointer=3.0.0=py311h1ea47a8_2 @ 8c491a1c
 krb5=1.21.3=hdf4eb48_0 @ 29f41490
-langchain=1.0.5=pymin310_h332efcf_0 @ 931c1ab2
 langchain-core=1.0.4=pyhd8ed1ab_0 @ 931c1ab2
-langchain-text-splitters=0.3.11=pyhd8ed1ab_0 @ 931c1ab2
-langgraph=1.0.3=pyhd8ed1ab_0 @ 931c1ab2
-langgraph-checkpoint=3.0.1=pyhcf101f3_0 @ 931c1ab2
-langgraph-prebuilt=1.0.4=pyhcf101f3_0 @ 931c1ab2
-langgraph-sdk=0.2.9=pyhcf101f3_0 @ 931c1ab2
 langsmith=0.3.45=pyhd8ed1ab_1 @ 931c1ab2
 language-model-service-api=0.2368.0=py_0 @ aeac16fb
 libabseil=20250512.1=cxx17_habfad5f_0 @ 29f41490
@@ -107,12 +94,10 @@ media-reference-api=0.2189.0=py_0 @ aeac16fb
 mio-api=0.2189.0=py_0 @ aeac16fb
 mkl=2025.3.0=hac47afa_454 @ 29f41490
 models-api=0.1834.0=py_0 @ aeac16fb
-multidict=6.6.3=py311h3f79411_0 @ 29f41490
 numpy=1.26.4=py311h0b4df5a_0 @ 29f41490
 openssl=3.6.0=h725018a_0 @ 8c491a1c
 orc=2.2.1=h7414dfc_0 @ 29f41490
 orjson=3.11.4=py311hf51aa87_0 @ 8c491a1c
-ormsgpack=1.12.0=py311h3008f79_0 @ 8c491a1c
 packaging=25.0=pyh29332c3_1 @ 2cda1526
 palantir-layer-pack=0.28.0=py311 @ a7991665
 palantir-spark-time=3.24.0=py_0 @ 586315a4
@@ -120,7 +105,6 @@ palantir_models=0.1979.0=py311 @ a7991665
 pandas=2.3.3=py311h11fd7f3_1 @ 29f41490
 pip=25.3=pyh8b19718_0 @ 931c1ab2
 pluggy=1.6.0=pyhd8ed1ab_0 @ 2cda1526
-propcache=0.3.1=py311h5082efb_0 @ 29f41490
 py-rattler=0.16.0=py310hb39080a_1 @ 8c491a1c
 py4j=0.10.9.7=pyhd8ed1ab_0 @ 586315a4
 pyarrow=22.0.0=py311h1ea47a8_0 @ 29f41490
@@ -138,7 +122,6 @@ python=3.11.14=h0159041_2_cpython @ 29f41490
 python-dateutil=2.9.0.post0=pyhe01879c_2 @ 2cda1526
 python-gil=3.11.14=hd8ed1ab_2 @ 2cda1526
 python-tzdata=2025.2=pyhd8ed1ab_0 @ 2cda1526
-python-xxhash=3.6.0=py311h2f2c37c_1 @ 8c491a1c
 python_abi=3.11=8_cp311 @ 2cda1526
 pytz=2025.2=pyhd8ed1ab_0 @ 2cda1526
 pyyaml=6.0.3=py311h3f79411_0 @ 29f41490
@@ -146,12 +129,10 @@ re2=2025.11.05=ha104f34_0 @ 29f41490
 requests=2.32.5=pyhd8ed1ab_0 @ 2cda1526
 requests-toolbelt=1.0.0=pyhd8ed1ab_1 @ 931c1ab2
 retrying=1.4.2=pyhe01879c_0 @ 931c1ab2
-ruff=0.14.5=h15e3a1f_0 @ 8c491a1c
 setuptools=78.1.1=pyhff2d567_0 @ 2cda1526
 six=1.17.0=pyhe01879c_1 @ 2cda1526
 snappy=1.2.2=h7fa0ca8_1 @ 8c491a1c
 sniffio=1.3.1=pyhd8ed1ab_2 @ 931c1ab2
-sqlalchemy=2.0.44=py311h3485c13_0 @ 8c491a1c
 tbb=2022.3.0=hd094cb3_1 @ 29f41490
 tenacity=9.1.2=pyhd8ed1ab_0 @ 931c1ab2
 tk=8.6.13=h2c6b04d_3 @ 8c491a1c
@@ -174,9 +155,7 @@ vcomp14=14.44.35208=h818238b_32 @ 29f41490
 vs2015_runtime=14.44.35208=h38c0c73_32 @ 29f41490
 wheel=0.45.1=pyhd8ed1ab_1 @ 2cda1526
 win_inet_pton=1.1.0=pyh7428d3b_8 @ 2cda1526
-xxhash=0.8.3=h2466b09_0 @ 8c491a1c
 yaml=0.2.5=h6a83c73_3 @ 29f41490
-yarl=1.22.0=py311h3f79411_0 @ 29f41490
 zipp=3.23.0=pyhd8ed1ab_0 @ 2cda1526
 zstandard=0.23.0=py311h3485c13_3 @ 8c491a1c
 zstd=1.5.7=hbeecb71_2 @ 29f41490
@@ -204,4 +183,4 @@ ri.stemma.main.repository.08f39c70-15a5-4b89-a021-8a3a1fc72509
 ri.stemma.main.repository.a9550cf0-488f-419f-b935-9004e067b93f
 
 [conda lock version]
-v3 - 2166611766ef6ee2c19afff6c446591046e1068e2f2f5b9073bc4e4767db41df
+v3 - a3733cb44b96cdd144de9ea8cc4cbe5946e1068e2f2f5b9073bc4e4767db41df

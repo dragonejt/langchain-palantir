@@ -144,6 +144,7 @@ ENV/
 .mypy_cache/
 
 _version.py
+_repo.py
 
 # Palantir
 .patches/

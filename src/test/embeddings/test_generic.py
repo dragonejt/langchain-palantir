@@ -18,7 +18,7 @@ class TestPalantirGenericEmbeddings(TestCase):
 
     def setUp(self) -> None:
         try:
-            model = GenericEmbeddingModel.get("Text_Embedding_3_Small")
+            model = GenericEmbeddingModel.get("Snowflake_Arctic_Embed_M")
             self.model = MagicMock(spec=GenericEmbeddingModel, wraps=model)
             self.using_live_model = True
         except Exception:

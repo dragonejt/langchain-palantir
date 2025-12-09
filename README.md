@@ -88,7 +88,7 @@ answer = llm.invoke(messages)
 ### Using Palantir Embedding Models
 
 ```python
-model = GenericEmbeddingModel.get("Text_Embedding_3_Small")
+model = GenericEmbeddingModel.get("Snowflake_Arctic_Embed_M")
 texts = ["Hello World", "Hello AI"]
 embedding = PalantirGenericEmbeddings(model=model)
 

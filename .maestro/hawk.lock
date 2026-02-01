@@ -250,12 +250,10 @@ c37a1747 - linux-64 @ tar.bz2 @ ri.artifacts.repository.python-library.models
 
 [pip-indices]
 ri.python-osdk-asset-bundle.main.artifacts.repository
-ri.stemma.main.repository.08f39c70-15a5-4b89-a021-8a3a1fc72509
 ri.stemma.main.repository.a9550cf0-488f-419f-b935-9004e067b93f
 
 [cran-repos]
-ri.stemma.main.repository.08f39c70-15a5-4b89-a021-8a3a1fc72509
 ri.stemma.main.repository.a9550cf0-488f-419f-b935-9004e067b93f
 
 [conda lock version]
-v3 - d931e9eb6598773d0f11353eb066753046e1068e2f2f5b9073bc4e4767db41df
+v3 - d931e9eb6598773d0f11353eb0667530c9d5d17b63a72934c01bf06879ee82ca

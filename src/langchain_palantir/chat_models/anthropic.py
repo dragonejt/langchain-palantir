@@ -64,7 +64,6 @@ from language_model_service_api.languagemodelservice_api_completion_v3 import (
     ClaudeEnabledThinking,
     ClaudeImageBase64Source,
     ClaudeImageSource,
-    ClaudeImageUrlSource,
     ClaudeThinking,
     ClaudeTool,
     ClaudeToolChoice,
@@ -335,24 +334,12 @@ class PalantirChatAnthropic(BaseChatModel):
                         )
                     )
                 elif content["type"] == "image":
-                    if "url" in content:
-                        source = ClaudeImageSource(
-                            url=ClaudeImageUrlSource(url=content["url"])
+                    source = ClaudeImageSource(
+                        base64=ClaudeImageBase64Source(
+                            data=content["base64"],
+                            media_type=content["mime_type"].upper().replace("/", "_"),
                         )
-                    elif "base64" in content:
-                        source = ClaudeImageSource(
-                            base64=ClaudeImageBase64Source(
-                                data=content["base64"],
-                                media_type=content["mime_type"]
-                                .upper()
-                                .replace("/", "_"),
-                            )
-                        )
-                    else:
-                        raise ValueError(
-                            f"No image source type found between `base64` and `url`: {content.keys()}"
-                        )
-
+                    )
                     formatted_content.append(
                         ClaudeChatMessageContent(
                             image=ClaudeChatImageContent(source=source)

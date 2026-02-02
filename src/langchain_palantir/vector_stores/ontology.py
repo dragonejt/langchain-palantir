@@ -266,4 +266,3 @@ class PalantirOntology(VectorStore):
             Document(page_content=neighbor.text, metadata=json.loads(neighbor.metadata))
             for neighbor in nearest_neighbors
         ]
-

@@ -24,7 +24,7 @@ from langchain_palantir import PalantirChatAnthropic
 
 
 class TestAnthropic(TestCase):
-    model: AnthropicClaudeLanguageModel
+    model: MagicMock
     llm: PalantirChatAnthropic
     using_live_model: bool
 
@@ -62,7 +62,7 @@ class TestAnthropic(TestCase):
         answer = self.llm.invoke(question)
 
         self.model.create_chat_completion.assert_called_once()
-        self.assertIn("rayleigh scattering", answer.content.lower())
+        self.assertIn("rayleigh scattering", str(answer.content).lower())
 
     def test_anthropic_tool_calling(self) -> None:
         messages = [HumanMessage("Using the date_time tool, what is today's date?")]
@@ -77,7 +77,7 @@ class TestAnthropic(TestCase):
             return datetime.now(timezone.utc).isoformat()
 
         tools = {"date_time": date_time}
-        llm_with_tools = self.llm.bind_tools(tools.values())
+        llm_with_tools = self.llm.bind_tools(list(tools.values()))
 
         if self.using_live_model is False:
             self.model.create_chat_completion.return_value = (
@@ -85,7 +85,7 @@ class TestAnthropic(TestCase):
                     content=[
                         ClaudeChatCompletionContent(
                             tool_use=ClaudeChatCompletionToolUseContent(
-                                id="", name="date_time", input=dict()
+                                id="", name="date_time", input={}
                             )
                         )
                     ],
@@ -112,8 +112,8 @@ class TestAnthropic(TestCase):
 
         if self.using_live_model is True:
             date = datetime.now(timezone.utc)
-            self.assertIn(str(date.year), final_answer.content)
-            self.assertIn(str(date.day), final_answer.content)
+            self.assertIn(str(date.year), str(final_answer.content))
+            self.assertIn(str(date.day), str(final_answer.content))
 
     def test_anthropic_agent(self) -> None:
         if self.using_live_model is False:
@@ -178,4 +178,4 @@ class TestAnthropic(TestCase):
             answer = self.llm.invoke(messages)
 
             self.model.create_chat_completion.assert_called_once()
-            self.assertIn("pizza", answer.content.lower())
+            self.assertIn("pizza", str(answer.content).lower())

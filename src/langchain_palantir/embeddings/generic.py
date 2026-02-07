@@ -27,8 +27,8 @@ class PalantirGenericEmbeddings(Embeddings):
     input type handling.
 
     Attributes:
-        model (GenericEmbeddingModel): The Palantir generic embedding model instance
-            used for generating embeddings.
+        model: The Palantir generic embedding model instance used for
+            generating embeddings.
     """
 
     model: GenericEmbeddingModel
@@ -37,8 +37,7 @@ class PalantirGenericEmbeddings(Embeddings):
         """Initialize the embeddings wrapper with a Palantir generic embedding model.
 
         Args:
-            model (GenericEmbeddingModel): A configured Palantir generic embedding
-                model instance.
+            model: A configured Palantir generic embedding model instance.
         """
         self.model = model
 
@@ -51,13 +50,13 @@ class PalantirGenericEmbeddings(Embeddings):
         using the default document input type.
 
         Args:
-            texts (list[str]): A list of document strings to embed. Each string
+            texts: A list of document strings to embed. Each string
                 represents a document or text chunk.
 
         Returns:
-            list[list[float]]: A list of embedding vectors, where each vector is a
-                list of floats representing the embedding for the corresponding input
-                text. The order of embeddings matches the order of input texts.
+            A list of embedding vectors, where each vector is a list of floats
+            representing the embedding for the corresponding input text. The order
+            of embeddings matches the order of input texts.
 
         Raises:
             Exception: If the embedding service returns an error or if the model
@@ -77,11 +76,10 @@ class PalantirGenericEmbeddings(Embeddings):
         optimal embedding generation for search scenarios.
 
         Args:
-            text (str): The search query string to embed.
+            text: The search query string to embed.
 
         Returns:
-            list[float]: An embedding vector as a list of floats representing the
-                query embedding.
+            An embedding vector as a list of floats representing the query embedding.
 
         Raises:
             Exception: If the embedding service returns an error or if the model

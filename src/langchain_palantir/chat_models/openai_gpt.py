@@ -77,21 +77,17 @@ class PalantirChatOpenAI(BaseChatModel):
     standard OpenAI parameters like temperature, max_tokens, etc.
 
     Attributes:
-        model (OpenAiGptChatWithVisionLanguageModel): OpenAiGptChatWithVisionLanguageModel from
-            palantir_models to use.
-        temperature (Optional[float]): What sampling temperature to use.
-        max_retries (int): Maximum number of retries to make when generating.
-        presence_penalty (Optional[float]): Penalizes repeated tokens.
-        frequency_penalty (Optional[float]): Penalizes repeated tokens according
-            to frequency.
-        seed (Optional[int]): Seed for generation.
-        logit_bias (Optional[dict[int, float]]): Modify the likelihood of specified
-            tokens appearing in the completion.
-        n (Optional[int]): Number of chat completions to generate for each prompt.
-        top_p (Optional[float]): Total probability mass of tokens to consider at
-            each step.
-        max_tokens (Optional[int]): Maximum number of tokens to generate.
-        stop (Optional[List[str]]): Default stop sequences.
+        model: OpenAiGptChatWithVisionLanguageModel from palantir_models to use.
+        temperature: What sampling temperature to use.
+        max_retries: Maximum number of retries to make when generating.
+        presence_penalty: Penalizes repeated tokens.
+        frequency_penalty: Penalizes repeated tokens according to frequency.
+        seed: Seed for generation.
+        logit_bias: Modify the likelihood of specified tokens appearing in the completion.
+        n: Number of chat completions to generate for each prompt.
+        top_p: Total probability mass of tokens to consider at each step.
+        max_tokens: Maximum number of tokens to generate.
+        stop: Default stop sequences.
     """
 
     model: OpenAiGptChatWithVisionLanguageModel
@@ -121,19 +117,18 @@ class PalantirChatOpenAI(BaseChatModel):
         and converting the response back to LangChain format.
 
         Args:
-            messages (List[BaseMessage]): List of messages in the conversation.
+            messages: List of messages in the conversation.
                 Can include HumanMessage, AIMessage, SystemMessage, ToolMessage,
                 and FunctionMessage types.
-            stop (Optional[List[str]]): Stop sequences to halt generation.
+            stop: Stop sequences to halt generation.
                 Overrides instance-level stop sequences if provided.
-            run_manager (Optional[CallbackManagerForLLMRun]): Callback manager
-                for handling generation events and logging.
-            **kwargs (Any): Additional keyword arguments including tool_choice
+            run_manager: Callback manager for handling generation events and logging.
+            **kwargs: Additional keyword arguments including tool_choice
                 and tools for function calling.
 
         Returns:
-            ChatResult: Result containing generated chat completions with usage
-                metadata including token counts.
+            Result containing generated chat completions with usage
+            metadata including token counts.
 
         Raises:
             ValueError: If an unsupported message type is provided.
@@ -171,7 +166,7 @@ class PalantirChatOpenAI(BaseChatModel):
         strict: Optional[bool] = None,
         parallel_tool_calls: Optional[bool] = None,
         **kwargs: Any,
-    ) -> Runnable[LanguageModelInput, BaseMessage]:
+    ) -> Runnable[LanguageModelInput, AIMessage]:
         """Bind tools to the chat model for function calling capabilities.
 
         This method enables the model to call functions/tools during generation.
@@ -179,25 +174,21 @@ class PalantirChatOpenAI(BaseChatModel):
         instance, allowing for structured interactions and tool usage.
 
         Args:
-            tools (Sequence[Union[dict[str, Any], type, Callable, BaseTool]]):
-                Tools to bind to the model. Can be dictionaries with OpenAI
+            tools: Tools to bind to the model. Can be dictionaries with OpenAI
                 function schemas, Python types, callable functions, or LangChain
                 BaseTool instances.
-            tool_choice (Optional[Union[dict, str, Literal["auto", "none", "required", "any"], bool]]):
-                Controls tool usage behavior. "auto" lets model decide, "none"
-                disables tools, "required" forces tool use, or specify a
+            tool_choice: Controls tool usage behavior. "auto" lets model decide,
+                "none" disables tools, "required" forces tool use, or specify a
                 particular tool name.
-            strict (Optional[bool]): Whether to use strict mode for function
-                schema validation.
-            parallel_tool_calls (Optional[bool]): Whether to allow multiple
-                tool calls in a single response.
-            **kwargs (Any): Additional keyword arguments passed to the parent
+            strict: Whether to use strict mode for function schema validation.
+            parallel_tool_calls: Whether to allow multiple tool calls in a
+                single response.
+            **kwargs: Additional keyword arguments passed to the parent
                 bind method.
 
         Returns:
-            Runnable[LanguageModelInput, BaseMessage]: A new runnable instance
-                with tools bound, maintaining the same interface as the base
-                chat model.
+            A new runnable instance with tools bound, maintaining the same
+            interface as the base chat model.
         """
         formatted_tools = [
             GptTool(
@@ -221,8 +212,8 @@ class PalantirChatOpenAI(BaseChatModel):
         """Return a dictionary of identifying parameters.
 
         Returns:
-            Dict[str, Any]: Dictionary containing model identification parameters
-                used for logging and monitoring purposes.
+            Dictionary containing model identification parameters
+            used for logging and monitoring purposes.
         """
         return {
             # The model name allows users to specify custom token counting
@@ -238,7 +229,7 @@ class PalantirChatOpenAI(BaseChatModel):
         """Get the type of language model used by this chat model.
 
         Returns:
-            str: The language model type identifier used for logging purposes.
+            The language model type identifier used for logging purposes.
         """
         return "palantir-openai-chat"
 
@@ -246,13 +237,11 @@ class PalantirChatOpenAI(BaseChatModel):
         """Convert a LangChain BaseMessage to Palantir ChatMessage format.
 
         Args:
-            message (BaseMessage): LangChain message to convert. Supports
-                HumanMessage, AIMessage, SystemMessage, ToolMessage, and
-                FunctionMessage types.
+            message: LangChain message to convert. Supports HumanMessage,
+                AIMessage, SystemMessage, ToolMessage, and FunctionMessage types.
 
         Returns:
-            MultiContentChatMessage: Palantir MultiContentChatMessage with
-                appropriate role and content.
+            Palantir MultiContentChatMessage with appropriate role and content.
 
         Raises:
             ValueError: If the message type is not supported.
@@ -298,13 +287,11 @@ class PalantirChatOpenAI(BaseChatModel):
         """Convert message content to Palantir ChatMessageContent format.
 
         Args:
-            contents (Union[str, List[Union[str, dict]]]): Message content to
-                convert. Can be a string, list of strings, or list of
-                dictionaries with text or image content.
+            contents: Message content to convert. Can be a string, list of
+                strings, or list of dictionaries with text or image content.
 
         Returns:
-            list[ChatMessageContent]: List of formatted chat message content
-                objects.
+            List of formatted chat message content objects.
 
         Raises:
             ValueError: If an unsupported content type is encountered.
@@ -342,12 +329,10 @@ class PalantirChatOpenAI(BaseChatModel):
         """Convert Palantir GPT response to LangChain ChatGeneration format.
 
         Args:
-            response (GptChatCompletionResponse): The response from Palantir's
-                GPT chat completion API.
+            response: The response from Palantir's GPT chat completion API.
 
         Returns:
-            list[ChatGeneration]: List of chat generations with converted
-                messages and usage metadata.
+            List of chat generations with converted messages and usage metadata.
 
         Raises:
             ValueError: If an unknown message role is encountered in the response.
@@ -398,9 +383,15 @@ class PalantirChatOpenAI(BaseChatModel):
                     )
                 )
             elif choice.message.role == ChatMessageRole.FUNCTION:
+                function_call = choice.message.function_call
                 generations.append(
                     ChatGeneration(
-                        message=FunctionMessage(content=choice.message.content or "")
+                        message=FunctionMessage(
+                            content=choice.message.content or "",
+                            name=function_call.name
+                            if function_call is not None
+                            else "",
+                        )
                     )
                 )
             else:
@@ -412,13 +403,13 @@ class PalantirChatOpenAI(BaseChatModel):
         """Convert LangChain ToolCall to Palantir GptToolCall format.
 
         Args:
-            tool_call (ToolCall): LangChain tool call to convert.
+            tool_call: LangChain tool call to convert.
 
         Returns:
-            GptToolCall: Palantir GPT tool call with serialized arguments.
+            Palantir GPT tool call with serialized arguments.
         """
         return GptToolCall(
-            id=tool_call["id"],
+            id=tool_call["id"] or "",
             tool_call=GptToolCallInfo(
                 function=FunctionToolCallInfo(
                     name=tool_call["name"], arguments=dumps(tool_call["args"])
@@ -430,16 +421,18 @@ class PalantirChatOpenAI(BaseChatModel):
         """Convert Palantir GptToolCall to LangChain ToolCall format.
 
         Args:
-            gpt_tool_call (GptToolCall): Palantir GPT tool call to convert.
+            gpt_tool_call: Palantir GPT tool call to convert.
 
         Returns:
-            ToolCall: LangChain tool call with deserialized arguments.
+            LangChain tool call with deserialized arguments.
         """
+        if gpt_tool_call.tool_call.function is None:
+            raise ValueError(f"Tool call does not exist: {gpt_tool_call.id}")
         return ToolCall(
             name=gpt_tool_call.tool_call.function.name,
             args=loads(gpt_tool_call.tool_call.function.arguments),
             id=gpt_tool_call.id,
-            type=gpt_tool_call.tool_call.type,
+            type="tool_call",
         )
 
     def _convert_to_gpt_tool_choice(
@@ -451,13 +444,12 @@ class PalantirChatOpenAI(BaseChatModel):
         """Convert tool choice parameter to Palantir GptToolChoice format.
 
         Args:
-            tool_choice (Optional[Union[dict, str, Literal["auto", "none", "required", "any"], bool]]):
-                Tool choice specification. Can be "auto", "none", "required",
-                or a specific tool name.
+            tool_choice: Tool choice specification. Can be "auto", "none",
+                "required", or a specific tool name.
 
         Returns:
-            Optional[GptToolChoice]: Palantir GPT tool choice configuration,
-                or None if no tool choice specified.
+            Palantir GPT tool choice configuration, or None if no tool
+            choice specified.
         """
         if tool_choice is None:
             return None
@@ -470,6 +462,6 @@ class PalantirChatOpenAI(BaseChatModel):
         else:
             return GptToolChoice(
                 specific=GptSpecificToolChoice(
-                    function=GptFunctionToolChoice(name=tool_choice)
+                    function=GptFunctionToolChoice(name=str(tool_choice))
                 )
             )

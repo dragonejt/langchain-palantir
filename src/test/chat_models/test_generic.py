@@ -16,7 +16,7 @@ from langchain_palantir import PalantirChatGeneric
 
 
 class TestGeneric(TestCase):
-    model: GenericChatCompletionLanguageModel
+    model: MagicMock
     llm: PalantirChatGeneric
     using_live_model: bool
 
@@ -46,4 +46,4 @@ class TestGeneric(TestCase):
         answer = self.llm.invoke(question)
 
         self.model.create_chat_completion.assert_called_once()
-        self.assertIn("rayleigh scattering", answer.content.lower())
+        self.assertIn("rayleigh scattering", str(answer.content).lower())

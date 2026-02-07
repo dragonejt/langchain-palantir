@@ -12,7 +12,7 @@ from langchain_palantir import PalantirGenericEmbeddings
 
 
 class TestPalantirGenericEmbeddings(TestCase):
-    model: GenericEmbeddingModel
+    model: MagicMock
     embedding: PalantirGenericEmbeddings
     using_live_model: bool
 

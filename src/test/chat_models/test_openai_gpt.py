@@ -19,7 +19,6 @@ from language_model_service_api.languagemodelservice_api_completion_v3 import (
     GptToolCallInfo,
 )
 from palantir_models.models import (
-    OpenAiGptChatLanguageModel,
     OpenAiGptChatWithVisionLanguageModel,
 )
 
@@ -27,7 +26,7 @@ from langchain_palantir import PalantirChatOpenAI
 
 
 class TestOpenAiGpt(TestCase):
-    model: OpenAiGptChatLanguageModel
+    model: MagicMock
     llm: PalantirChatOpenAI
     using_live_model: bool
 
@@ -73,7 +72,7 @@ class TestOpenAiGpt(TestCase):
         answer = self.llm.invoke(question)
 
         self.model.create_chat_completion.assert_called_once()
-        self.assertIn("rayleigh scattering", answer.content.lower())
+        self.assertIn("rayleigh scattering", str(answer.content).lower())
 
     def test_openai_tool_calling(self) -> None:
         messages = [HumanMessage("Using the date_time tool, what is today's date?")]
@@ -88,7 +87,7 @@ class TestOpenAiGpt(TestCase):
             return datetime.now(timezone.utc).isoformat()
 
         tools = {"date_time": date_time}
-        llm_with_tools = self.llm.bind_tools(tools.values())
+        llm_with_tools = self.llm.bind_tools(list(tools.values()))
 
         if self.using_live_model is False:
             self.model.create_chat_completion.return_value = GptChatCompletionResponse(
@@ -134,8 +133,8 @@ class TestOpenAiGpt(TestCase):
 
         if self.using_live_model is True:
             date = datetime.now(timezone.utc)
-            self.assertIn(str(date.year), final_answer.content)
-            self.assertIn(str(date.day), final_answer.content)
+            self.assertIn(str(date.year), str(final_answer.content))
+            self.assertIn(str(date.day), str(final_answer.content))
 
     def test_openai_agent(self) -> None:
         if self.using_live_model is False:
@@ -205,4 +204,4 @@ class TestOpenAiGpt(TestCase):
             answer = self.llm.invoke(messages)
 
             self.model.create_chat_completion.assert_called_once()
-            self.assertIn("pizza", answer.content.lower())
+            self.assertIn("pizza", str(answer.content).lower())

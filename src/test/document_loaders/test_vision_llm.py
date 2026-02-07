@@ -11,7 +11,7 @@ from langchain_palantir.document_loaders.vision_llm import PalantirVisionLLMLoad
 
 
 class TestPalantirVisionLLMLoader(TestCase):
-    model: VisionLLMDocumentPageExtractor
+    model: MagicMock
     image_path: Path
     using_live_model: bool
 

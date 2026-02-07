@@ -47,12 +47,11 @@ class PalantirChatGeneric(BaseChatModel):
     for general-purpose conversational AI applications.
 
     Attributes:
-        model (GenericChatCompletionLanguageModel): GenericChatCompletionLanguageModel from
-            palantir_models to use.
-        temperature (Optional[float]): What sampling temperature to use.
-        max_retries (int): Maximum number of retries to make when generating.
-        max_tokens (Optional[int]): Maximum number of tokens to generate.
-        stop (Optional[List[str]]): Default stop sequences.
+        model: GenericChatCompletionLanguageModel from palantir_models to use.
+        temperature: What sampling temperature to use.
+        max_retries: Maximum number of retries to make when generating.
+        max_tokens: Maximum number of tokens to generate.
+        stop: Default stop sequences.
     """
 
     model: GenericChatCompletionLanguageModel
@@ -76,17 +75,16 @@ class PalantirChatGeneric(BaseChatModel):
         and converting the response back to LangChain format.
 
         Args:
-            messages (List[BaseMessage]): List of messages in the conversation.
+            messages: List of messages in the conversation.
                 Can include HumanMessage, AIMessage, and SystemMessage types.
-            stop (Optional[List[str]]): Stop sequences to halt generation.
+            stop: Stop sequences to halt generation.
                 Overrides instance-level stop sequences if provided.
-            run_manager (Optional[CallbackManagerForLLMRun]): Callback manager
-                for handling generation events and logging.
-            **kwargs (Any): Additional keyword arguments for future extensibility.
+            run_manager: Callback manager for handling generation events and logging.
+            **kwargs: Additional keyword arguments for future extensibility.
 
         Returns:
-            ChatResult: Result containing generated chat completions with usage
-                metadata including token counts.
+            Result containing generated chat completions with usage
+            metadata including token counts.
 
         Raises:
             Exception: If the underlying model API call fails after retries.
@@ -112,8 +110,8 @@ class PalantirChatGeneric(BaseChatModel):
         """Return a dictionary of identifying parameters.
 
         Returns:
-            Dict[str, Any]: Dictionary containing model identification parameters
-                used for logging and monitoring purposes.
+            Dictionary containing model identification parameters
+            used for logging and monitoring purposes.
         """
         return {
             # The model name allows users to specify custom token counting
@@ -129,7 +127,7 @@ class PalantirChatGeneric(BaseChatModel):
         """Get the type of language model used by this chat model.
 
         Returns:
-            str: The language model type identifier used for logging purposes.
+            The language model type identifier used for logging purposes.
         """
         return "palantir-generic-chat"
 
@@ -137,13 +135,12 @@ class PalantirChatGeneric(BaseChatModel):
         """Convert a LangChain BaseMessage to generic DialogChatMessage format.
 
         Args:
-            message (BaseMessage): LangChain message to convert. Supports
-                HumanMessage, AIMessage, and SystemMessage types. Other message
-                types will be converted with UNKNOWN role.
+            message: LangChain message to convert. Supports HumanMessage,
+                AIMessage, and SystemMessage types. Other message types will
+                be converted with UNKNOWN role.
 
         Returns:
-            DialogChatMessage: Generic DialogChatMessage with appropriate role
-                and content.
+            Generic DialogChatMessage with appropriate role and content.
         """
         if isinstance(message, HumanMessage):
             return DialogChatMessage(
@@ -172,14 +169,12 @@ class PalantirChatGeneric(BaseChatModel):
         """Convert generic chat completion response to LangChain ChatGeneration format.
 
         Args:
-            response (GenericChatCompletionResponse): The response from Palantir's
-                generic chat completion API containing the generated completion
-                and token usage information.
+            response: The response from Palantir's generic chat completion API
+                containing the generated completion and token usage information.
 
         Returns:
-            list[ChatGeneration]: List containing a single chat generation with
-                the converted message and usage metadata including input, output,
-                and total token counts.
+            List containing a single chat generation with the converted message
+            and usage metadata including input, output, and total token counts.
         """
         return [
             ChatGeneration(

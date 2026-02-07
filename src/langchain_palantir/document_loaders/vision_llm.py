@@ -25,8 +25,8 @@ from pathlib import Path
 
 from langchain_core.document_loaders import BaseLoader
 from langchain_core.documents import Document
+from language_model_service_api.languagemodelservice_api import MimeType
 from palantir_models.models import VisionLLMDocumentPageExtractor
-from pydantic import Field
 from typing_extensions import Iterator, Optional, Union, override
 
 
@@ -46,22 +46,21 @@ class PalantirVisionLLMLoader(BaseLoader):
     Attributes:
         model: The Palantir Vision LLM model used for text extraction.
         documents: List of documents to process, either as file paths or raw bytes.
-        max_retries: Maximum number of retry attempts for model inference. Defaults to 0.
+        max_retries: Optional maximum number of retry attempts for model inference.
         max_tokens: Optional maximum number of tokens to generate in the extraction.
-            If None, uses the model's default limit.
     """
 
     model: VisionLLMDocumentPageExtractor
     documents: list[Union[Path, bytes]]
-    max_retries: int = 0
-    max_tokens: Optional[int] = Field(default=None)
+    max_retries: Optional[int] = None
+    max_tokens: Optional[int] = None
 
     def __init__(
         self,
         model: VisionLLMDocumentPageExtractor,
         documents: list[Union[Path, bytes]],
         *,
-        max_retries: int = 0,
+        max_retries: Optional[int] = None,
         max_tokens: Optional[int] = None,
     ) -> None:
         """Initializes the Palantir Vision LLM document loader.
@@ -72,10 +71,10 @@ class PalantirVisionLLMLoader(BaseLoader):
             documents: List of documents to process. Each document can be either
                 a Path object pointing to an image file, or raw bytes representing
                 image data.
-            max_retries: Maximum number of retry attempts if model inference fails.
-                Defaults to 0 (no retries).
+            max_retries: Optional maximum number of retry attempts if model inference
+                fails. If None, uses the model's default.
             max_tokens: Optional maximum number of tokens to generate during
-                extraction. If None, uses the model's default token limit.
+                extraction. If None, uses the model's default.
         """
         self.model = model
         self.documents = documents
@@ -126,20 +125,39 @@ class PalantirVisionLLMLoader(BaseLoader):
                 - metadata: Dictionary containing source filename and MIME type
                   (for file-based inputs) or empty (for bytes inputs)
         """
-        image_bytes: bytes = document
         mime_type = "image/png"
-        metadata = dict()
+        metadata = dict[str, str]()
         if isinstance(document, Path):
-            mime_type = mimetypes.guess_type(document)[0]
+            mime_type = mimetypes.guess_type(document)[0] or mime_type
             metadata = {"source": document.name, "mime_type": mime_type}
             with open(document, "rb") as image:
                 image_bytes = image.read()
+        else:
+            image_bytes = document
 
-        response = self.model.create_extraction(
-            image_bytes,
-            mime_type.upper().replace("/", "_"),
-            max_rate_limit_retries=self.max_retries,
-            max_tokens=self.max_tokens,
-        )
+        if self.max_retries is not None and self.max_tokens is not None:
+            response = self.model.create_extraction(
+                image_bytes,
+                MimeType(mime_type.upper().replace("/", "_")),
+                max_rate_limit_retries=self.max_retries,
+                max_tokens=self.max_tokens,
+            )
+        elif self.max_retries is not None:
+            response = self.model.create_extraction(
+                image_bytes,
+                MimeType(mime_type.upper().replace("/", "_")),
+                max_rate_limit_retries=self.max_retries,
+            )
+        elif self.max_tokens is not None:
+            response = self.model.create_extraction(
+                image_bytes,
+                MimeType(mime_type.upper().replace("/", "_")),
+                max_tokens=self.max_tokens,
+            )
+        else:
+            response = self.model.create_extraction(
+                image_bytes,
+                MimeType(mime_type.upper().replace("/", "_")),
+            )
 
         return Document(page_content=response, metadata=metadata)
